@@ -5,12 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5390ce1e-2ca2-4b32-865c-bda57582af91" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/medcare/dto/AppointmentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/medcare/dto/AppointmentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/medcare/service/ClinicRegistrationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/medcare/service/ClinicRegistrationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/medcare/Controllers/AppointmentControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/medcare/Controllers/AppointmentControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/medcare/Services/CancelAppointmentServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/medcare/Services/CancelAppointmentServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/medcare/Services/ScheduleAppointmentServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/medcare/Services/ScheduleAppointmentServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Back-End.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Back-End.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Authorization/AuthenticationResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Authorization/LogOutService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Authorization/Permission.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Component/ReminderScheduler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Config/ApplicationConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Config/CorsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Config/JWTAuthenticationFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Config/JWTService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Enums/Role.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/RakkeniShokranApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Services/AuthenticationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Services/EmailService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Services/ForgetResetPasswordService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Services/ReminderService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/java/org/example/rakkenishokran/Services/SignUpService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakkeni-Shokran/src/test/java/org/example/rakkenishokran/RakkeniShokranApplicationTests.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +62,31 @@
     &quot;assignee&quot;: &quot;Amir-Ragaie&quot;
   }
 }</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="Resolve-dependencies" />
+                    <option name="lastUsedInstant" value="1735075327" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1735075326" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Rakeni-Shokran/Back-End.git&quot;,
@@ -83,7 +130,7 @@
     "WebServerToolWindowFactoryState": "false",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Resolve-dependencies",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Amir/OneDrive - Alexandria University/Desktop/FOE-AU/CSED_Y3_1st Semester/Database Systems/Project/Frontend",
@@ -93,8 +140,8 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
+    "project.structure.proportion": "0.24392039",
+    "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "spring.configuration.checksum": "a6c0b6c1b1f1f85a969fac252dbd8903",
     "vue.rearranger.settings.migration": "true"
@@ -122,7 +169,7 @@
       <recent name="com.example.medcare.service" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.CancelAppointmentServiceTest">
     <configuration name="CancelAppointmentServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MedCare" />
       <extension name="coverage">
@@ -199,6 +246,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="RakkeniShokranApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Back-End" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.rakkenishokran.RakkeniShokranApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.java in MedCare" />
@@ -263,6 +318,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
