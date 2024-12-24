@@ -27,15 +27,15 @@ public class SignUpService {
 
         try {
             String jwtToken = savePatient(signUpRequest);
-            return ResponseEntity.ok().body(ResponseMessageDto.builder().success(true)
+            return ResponseEntity.ok().body(ResponseMessageDTO.builder().success(true)
                     .message("Patient registered successfully").statusCode(200).data(jwtToken).build());
 
         } catch (DataIntegrityViolationException e) {
             String errorMessage = extractConstraintMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(ResponseMessageDto.builder().success(false).message(errorMessage).statusCode(400).build());
+                    .body(ResponseMessageDTO.builder().success(false).message(errorMessage).statusCode(400).build());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ResponseMessageDto.builder().success(false)
+            return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
                     .message("An unexpected error occurred").statusCode(500).build());
         }
 
@@ -50,14 +50,14 @@ public class SignUpService {
             HttpHeaders responseHeader = new HttpHeaders();
             responseHeader.set("message", "Doctor registered successfully");
             return ResponseEntity.ok().headers(responseHeader).body(
-                    ResponseMessageDto.builder().success(true).message("Doctor registered successfully").statusCode(200)
+                    ResponseMessageDTO.builder().success(true).message("Doctor registered successfully").statusCode(200)
                             .data(jwtToken).build());
         } catch (DataIntegrityViolationException e) {
             String errorMessage = extractConstraintMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(ResponseMessageDto.builder().success(false).message(errorMessage).statusCode(400).build());
+                    .body(ResponseMessageDTO.builder().success(false).message(errorMessage).statusCode(400).build());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ResponseMessageDto.builder().success(false)
+            return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
                     .message("An unexpected error occurred").statusCode(500).build());
         }
     }
@@ -151,7 +151,7 @@ public class SignUpService {
 
         {
             return ResponseEntity.badRequest().body(
-                    ResponseMessageDto.builder()
+                    ResponseMessageDTO.builder()
                             .message("Invalid sign up request")
                             .success(false)
                             .statusCode(400)
@@ -190,7 +190,7 @@ public class SignUpService {
 
             var jwtToken = jwtService.generateToken(extraClaims, admin);
             return ResponseEntity.ok(
-                    ResponseMessageDto.builder()
+                    ResponseMessageDTO.builder()
                             .message("Admin registered successfully, waiting for verification")
                             .success(true)
                             .statusCode(200)

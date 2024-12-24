@@ -1,10 +1,9 @@
 package org.example.rakkenishokran.Enums;
 
+
 import org.example.rakkenishokran.Authorization.Permission;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-// Ensure Lombok is properly set up in the project by adding it as a dependency in your build file.
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
@@ -20,19 +19,18 @@ public enum Role {
             ADMIN_DELETE,
             ADMIN_CREATE)),
 
+
     LOT_MANAGER(Set.of(
             LOT_MANAGER_READ,
             LOT_MANAGER_UPDATE,
             LOT_MANAGER_DELETE,
             LOT_MANAGER_CREATE)),
-
+            
     DRIVER(Set.of(
             DRIVER_READ,
             DRIVER_UPDATE,
             DRIVER_DELETE,
-            DRIVER_CREATE)),
-
-
+            DRIVER_CREATE));  
 
     @Getter
     private final Set<Permission> permissions;

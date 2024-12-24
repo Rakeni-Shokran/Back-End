@@ -1,12 +1,10 @@
-package com.example.medcare.service;
+package org.example.rakkenishokran.Services;
 
 
-import com.example.medcare.Authorization.AuthenticationResponse;
-import com.example.medcare.config.JwtService;
-import com.example.medcare.dto.AuthenticationRequest;
-
-import com.example.medcare.dto.ResponseMessageDto;
-import com.example.medcare.entities.User;
+import org.example.rakkenishokran.Authorization.AuthenticationResponse;
+import org.example.rakkenishokran.Config.JwtService;
+import org.example.rakkenishokran.DTOs.*;
+import org.example.rakkenishokran.Entities.User;
 import com.example.medcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +19,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticateService {
+public class AuthenticationService {
 
-    private final JwtService jwtService;
+    private final org.example.rakkenishokran.Config.JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
 
-    public ResponseEntity<Object> authenticate(AuthenticationRequest request) {
+    public ResponseEntity<Object> authenticate(AuthenticationRequestDTO request) {
         try {
             String username;
             User user;
@@ -59,14 +57,14 @@ public class AuthenticateService {
                     ;
             var token = jwtService.generateToken(claims, user);
 
-            return ResponseEntity.ok().body(ResponseMessageDto.builder().message("User authenticated successfully").success(true).statusCode(200).data(token).build());
+            return ResponseEntity.ok().body(ResponseMessageDTO.builder().message("User authenticated successfully").success(true).statusCode(200).data(token).build());
 
         }
         catch (Exception e) {
 
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body(ResponseMessageDto.builder()
+                    .body(ResponseMessageDTO.builder()
                             .message(e.getMessage())
                             .success(false)
                             .statusCode(400)
@@ -90,9 +88,9 @@ public class AuthenticateService {
             )
                     ;
             var newToken = jwtService.generateToken(claims, user);
-            return ResponseEntity.ok().body(ResponseMessageDto.builder().message("Token refreshed successfully").success(true).statusCode(200).data(newToken).build());
+            return ResponseEntity.ok().body(ResponseMessageDTO.builder().message("Token refreshed successfully").success(true).statusCode(200).data(newToken).build());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseMessageDto.builder().message(e.getMessage()).success(false).statusCode(400).data(null).build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseMessageDTO.builder().message(e.getMessage()).success(false).statusCode(400).data(null).build());
         }
     }
 
