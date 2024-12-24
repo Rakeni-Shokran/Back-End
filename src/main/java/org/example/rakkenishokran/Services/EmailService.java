@@ -1,5 +1,5 @@
-package com.example.medcare.service;
-import com.example.medcare.dto.MailBody;
+package org.example.rakkenishokran.Services;
+import org.example.rakkenishokran.DTOs.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender javaMailSender;
 
-    public void sendHtmlMessage(MailBody mailBody) {
+    public void sendHtmlMessage(MailBodyDTO mailBody) {
         try {
             // Create a MimeMessage
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

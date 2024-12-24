@@ -1,4 +1,4 @@
-package com.example.medcare.service;
+package org.example.rakkenishokran.Services;
 
 
 import com.example.medcare.dto.MailBody;
@@ -49,7 +49,7 @@ public class ReminderService {
 
                     if (!appointment.isReminded() &&LocalDateTime.now().plusDays(1).toLocalDate().isEqual(appointmentDateTime.toLocalDate())) {
                         appointment.setReminded(true);
-                        MailBody mailBody = MailBody.builder()
+                        MailBodyDTO mailBody = MailBodyDTO.builder()
                                 .to(patient.getEmail())
                                 .subject("Reminder: Appointment Tomorrow")
                                 .body(
