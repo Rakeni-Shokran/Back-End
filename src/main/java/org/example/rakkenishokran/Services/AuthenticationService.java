@@ -5,7 +5,7 @@ import org.example.rakkenishokran.Authorization.AuthenticationResponse;
 import org.example.rakkenishokran.Config.JwtService;
 import org.example.rakkenishokran.DTOs.*;
 import org.example.rakkenishokran.Entities.User;
-import com.example.medcare.repository.UserRepository;
+import org.example.rakkenishokran.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
