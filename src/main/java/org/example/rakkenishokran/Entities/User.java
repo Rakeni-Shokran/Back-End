@@ -26,6 +26,9 @@ public class User implements UserDetails {
 
     private Role role;
 
+    public User(long id, String email, String password, String name, String phoneNumber) {
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

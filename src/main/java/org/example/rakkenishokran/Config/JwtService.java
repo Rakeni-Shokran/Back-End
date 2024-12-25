@@ -1,12 +1,11 @@
 package org.example.rakkenishokran.Config;
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.JWTClaimsSet;
+//import com.nimbusds.jose.JWSObject;
+//import com.nimbusds.jose.crypto.RSASSAVerifier;
+//import com.nimbusds.jose.jwk.JWKSet;
+//import com.nimbusds.jose.jwk.RSAKey;
+//import com.nimbusds.jwt.JWTClaimsSet;
 
 import lombok.RequiredArgsConstructor;
-import org.example.rakkenishokran.Repositories.TokenRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
@@ -26,7 +25,6 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String Security_Key = "088TI3YCXQd26NOxZJXXKwFAIyojGuY2Y6HX7kVb9ftVp3Rz"; //
-    private final TokenRepository tokenRepo;
     private Claims extractAllClaims(String token) {
 
         return Jwts.
@@ -118,18 +116,16 @@ public class JwtService {
         return (userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-
-    //Check if the token is expired or not by comparing the expiration date with the current date
     private boolean isTokenExpired(String token) {
-        var token2 = tokenRepo.findByToken(token);
-        boolean isExpired = token2.isPresent() && token2.get().isRevoked();
-        return extractExpiration(token).before(new Date()) || isExpired;
+        return extractExpiration(token).before(new Date());
     }
+
+
+
 
 
 }

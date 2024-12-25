@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final LogOutService logoutHandler;
+//    private final LogOutService logoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // to add the filter before the UsernamePasswordAuthenticationFilter
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout") // to set the logout url
-                        .addLogoutHandler(logoutHandler) // to add the logout handler
+//                        .addLogoutHandler(logoutHandler) // to add the logout handler
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()) // to set the logout success handler
                 );
 

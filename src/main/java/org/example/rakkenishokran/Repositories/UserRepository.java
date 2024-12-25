@@ -15,7 +15,7 @@ public class UserRepository {
     private JdbcTemplate jdbcTemplate;
 
     public List<User> findAll() {
-        return jdbcTemplate.query("SELECT * FROM users", (rs, rowNum) ->
+        return jdbcTemplate.query("SELECT * FROM USER", (rs, rowNum) ->
                 new User(
                         rs.getLong("id"),
                         rs.getString("email"),
@@ -26,7 +26,7 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?",
+        return jdbcTemplate.query("SELECT * FROM USER WHERE email = ?",
                 new Object[]{email},
                 (rs, rowNum) -> new User(
                         rs.getLong("id"),
@@ -37,7 +37,7 @@ public class UserRepository {
                 )).stream().findFirst();
     }
     public void save(User user) {
-        jdbcTemplate.update("INSERT INTO users (name, email) VALUES (?, ?)",
+        jdbcTemplate.update("INSERT INTO USER (name, email) VALUES (?, ?)",
                 user.getName(), user.getEmail());
     }
 }
