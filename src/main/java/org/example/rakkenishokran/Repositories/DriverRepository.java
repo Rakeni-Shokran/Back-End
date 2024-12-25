@@ -15,10 +15,11 @@ public class DriverRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-
     public void save(Driver driver) {
-        jdbcTemplate.update("INSERT INTO USER (name, phoneNumber, email, password) VALUES (?, ?, ?, ?)",
-                driver.getUsername(),driver.getPhoneNumber(), driver.getEmail(), driver.getPassword());
+        jdbcTemplate.update("INSERT INTO DRIVER (payment, license, userId) VALUES (?, ?, ?)",
+                driver.getPaymentMethod(),
+                driver.getLicenseNumber(),
+                driver.getUserId()
+        );
     }
-
 }
