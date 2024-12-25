@@ -16,4 +16,14 @@ public class TokenRepository {
         jdbcTemplate.update("INSERT INTO tokens (token, user_id, revoked) VALUES (?, ?, ?)",
                 token.getToken(), token.getUser().getId(), token.isRevoked());
     }
+    
+    //find by token 
+    public Optional<Token> findByToken(String token) {
+        return jdbcTemplate.query("SELECT * FROM tokens WHERE token = ?",
+                new Object[]{token},
+                (rs, rowNum) -> Optional.of(new Token(rs.getString("token"), rs.getBoolean("revoked")))).stream().findFirst().orElse(null);
+    }
+
+
+
 }

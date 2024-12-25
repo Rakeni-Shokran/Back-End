@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -24,6 +25,17 @@ public class UserRepository {
                 ));
     }
 
+    public Optional<User> findByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?",
+                new Object[]{email},
+                (rs, rowNum) -> new User(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("name"),
+                        rs.getString("phoneNumber")
+                )).stream().findFirst();
+    }
     public void save(User user) {
         jdbcTemplate.update("INSERT INTO users (name, email) VALUES (?, ?)",
                 user.getName(), user.getEmail());

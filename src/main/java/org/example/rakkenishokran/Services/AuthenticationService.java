@@ -28,36 +28,34 @@ public class AuthenticationService {
 
     public ResponseEntity<Object> authenticate(AuthenticationRequestDTO request) {
         try {
-            String username;
+            String userEmail;
             User user;
             // handling the password in the front end
-            if(request.getEmail() == null  && request.getUsername() != null){
-                username = request.getUsername();
-                user = userRepository.findByUsername(username)
+            if(request.getEmail() != null ){
+                userEmail = request.getEmail();
+                user = userRepository.findByEmail(userEmail)
                         .orElseThrow(() -> new IllegalArgumentException("User not found"));
-            }
-            else if(request.getUsername() == null && request.getEmail() != null){
-                user = userRepository.findByEmail(request.getEmail())
-                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
-                username = user.getUsername();
             }
             else {
                 throw new IllegalArgumentException("Invalid request");
             }
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
 
             );
             Map<String, Object> claims = Map.of("role", user.getRole().toString(),
-                    "firstName", user.getFirstName(),
-                    "lastName", user.getLastName(),
-                    "email", user.getEmail(),
-                    "username", user.getUsername()
-            )
-                    ;
+                    "name", user.getName(),
+                    "email", user.getEmail()
+            );
+
             var token = jwtService.generateToken(claims, user);
 
-            return ResponseEntity.ok().body(ResponseMessageDTO.builder().message("User authenticated successfully").success(true).statusCode(200).data(token).build());
+            return ResponseEntity.ok().body(
+                    ResponseMessageDTO.builder().
+                            message("User authenticated successfully")
+                            .success(true)
+                            .statusCode(200)
+                            .data(token).build());
 
         }
         catch (Exception e) {
@@ -77,14 +75,12 @@ public class AuthenticationService {
 
     public ResponseEntity<Object> refreshToken(String token) {
         try {
-            String username = jwtService.extractUsername(token);
-            User user = userRepository.findByUsername(username)
+            String userEmail = jwtService.extractUsername(token);
+            User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             Map<String, Object> claims = Map.of("role", user.getRole().toString(),
-                    "firstName", user.getFirstName(),
-                    "lastName", user.getLastName(),
-                    "email", user.getEmail(),
-                    "username", user.getUsername()
+                    "name", user.getName(),
+                    "email", user.getEmail()
             )
                     ;
             var newToken = jwtService.generateToken(claims, user);

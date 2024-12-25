@@ -2,7 +2,6 @@ package org.example.rakkenishokran.Config;
 
 
 import org.example.rakkenishokran.Authorization.*;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/authenticate/**") // list of request that should be permitted
                         .permitAll()
 
@@ -47,6 +47,7 @@ public class SecurityConfig {
                 )
 
                 .sessionManagement(session -> session
+                        // new session for each request
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // to make the session stateless
                 )
                 .authenticationProvider(authenticationProvider) // to add the authentication provider
