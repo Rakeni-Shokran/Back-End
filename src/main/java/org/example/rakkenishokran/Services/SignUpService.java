@@ -18,11 +18,8 @@ import java.util.Map;
 @Service
 public class SignUpService {
 
-    private final PatientRepository patientRepository;
     private final JwtService jwtService;
-    private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ClinicAdminRepository clinicAdminRepository;
 
     public ResponseEntity<Object> patientSignUp(PatientDTO signUpRequest) {
 
