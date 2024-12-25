@@ -1,0 +1,102 @@
+package org.example.rakkenishokran.Services;
+
+
+import org.example.rakkenishokran.Authorization.AuthenticationResponse;
+import org.example.rakkenishokran.Config.JwtService;
+import org.example.rakkenishokran.DTOs.*;
+import org.example.rakkenishokran.Entities.User;
+import org.example.rakkenishokran.Repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class AuthenticationService {
+
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+
+
+    public ResponseEntity<Object> authenticate(AuthenticationRequestDTO request) {
+        try {
+            String userEmail;
+            User user;
+            // handling the password in the front end
+            if(request.getEmail() != null ){
+                userEmail = request.getEmail();
+                user = userRepository.findByEmail(userEmail)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            }
+            else {
+                throw new IllegalArgumentException("Invalid request");
+            }
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+
+            );
+            Map<String, Object> claims = Map.of("role", user.getRole().toString(),
+                    "name", user.getName(),
+                    "email", user.getEmail()
+            );
+
+            var token = jwtService.generateToken(claims, user);
+
+            return ResponseEntity.ok().body(
+                    ResponseMessageDTO.builder().
+                            message("User authenticated successfully")
+                            .success(true)
+                            .statusCode(200)
+                            .data(token).build());
+
+        }
+        catch (Exception e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseMessageDTO.builder()
+                            .message(e.getMessage())
+                            .success(false)
+                            .statusCode(400)
+                            .data(null)
+                            .build());
+        }
+
+    }
+
+
+    public ResponseEntity<Object> refreshToken(String token) {
+        try {
+            String userEmail = jwtService.extractUsername(token);
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            Map<String, Object> claims = Map.of("role", user.getRole().toString(),
+                    "name", user.getName(),
+                    "email", user.getEmail()
+            );
+
+            var newToken = jwtService.generateToken(claims, user);
+            return ResponseEntity.ok().body(ResponseMessageDTO.builder().message("Token refreshed successfully").success(true).statusCode(200).data(newToken).build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body(ResponseMessageDTO.builder()
+                            .message(e.getMessage())
+                            .success(false)
+                            .statusCode(400)
+                            .data(null).build());
+        }
+    }
+
+
+
+
+
+}
