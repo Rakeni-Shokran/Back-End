@@ -13,7 +13,19 @@ public class TokenRepository {
     private JdbcTemplate jdbcTemplate;
 
     public void save(Token token) {
-        jdbcTemplate.update("INSERT INTO tokens (token, user_id, revoked) VALUES (?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO TOKEN (token, userId, revoked) VALUES (?, ?, ?)",
                 token.getToken(), token.getUser().getId(), token.isRevoked());
+    }
+
+    public Optional<Token> findByToken(String token) {
+        return jdbcTemplate.query("SELECT * FROM TOKEN WHERE token = ?",
+                (rs, rowNum) -> new Token(
+                        rs.getInt("id"),
+                        rs.getString("token"),
+                        null,
+                        rs.getBoolean("revoked")
+                ),
+                token
+        ).stream().findFirst();
     }
 }
