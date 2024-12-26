@@ -15,7 +15,6 @@ public class DriverDTO {
     private String email;
     private String password;
     private String phoneNumber;
-    private String licenceNumber;
     private String paymentMethod;
     private String licenseNumber;
 

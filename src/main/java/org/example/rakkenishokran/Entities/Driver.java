@@ -12,6 +12,6 @@ public class Driver extends User{
 
     private String paymentMethod;
     private String licenseNumber;
-    private Integer userID;
+    private long userId;
 
 }

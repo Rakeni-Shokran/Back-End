@@ -1,7 +1,6 @@
 package org.example.rakkenishokran.Services;
 
 
-import org.example.rakkenishokran.Authorization.AuthenticationResponse;
 import org.example.rakkenishokran.Config.JwtService;
 import org.example.rakkenishokran.DTOs.*;
 import org.example.rakkenishokran.Entities.User;
@@ -13,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.example.rakkenishokran.DTOs.ResponseMessageDTO;
+import org.example.rakkenishokran.DTOs.AuthenticationRequestDTO;
+
 
 import java.util.Map;
 
@@ -26,36 +28,47 @@ public class AuthenticationService {
     private final UserRepository userRepository;
 
 
+
     public ResponseEntity<Object> authenticate(AuthenticationRequestDTO request) {
         try {
-            String userEmail;
-            User user;
-            // handling the password in the front end
-            if(request.getEmail() != null ){
-                userEmail = request.getEmail();
-                user = userRepository.findByEmail(userEmail)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            if (request.getUsername() == null || request.getPassword() == null || 
+                request.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Username and password are required");
             }
-            else {
-                throw new IllegalArgumentException("Invalid request");
-            }
+
+            System.out.println("Attempting authentication for user: " + request.getUsername());
+            System.out.println("User password: " + request.getPassword());
+
+            User user = userRepository.findByUsername(request.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            System.out.println("Found user: " + user.getUsername());
+            System.out.println("User password hash: " + user.getPassword());
+            System.out.println("User role: " + user.getRole());
+
+            // This will throw an exception if authentication fails
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
             );
+            System.out.println("sss");
+
             Map<String, Object> claims = Map.of("role", user.getRole().toString(),
-                    "name", user.getName(),
-                    "email", user.getEmail()
-            );
-
+                    "email", user.getEmail(),
+                    "username", user.getUsername()
+            )
+                    ;
             var token = jwtService.generateToken(claims, user);
 
             return ResponseEntity.ok().body(
-                    ResponseMessageDTO.builder().
-                            message("User authenticated successfully")
+                    ResponseMessageDTO.builder()
+                            .message("User authenticated successfully")
                             .success(true)
                             .statusCode(200)
-                            .data(token).build());
+                            .data(token)
+                            .build());
 
         }
         catch (Exception e) {
@@ -65,7 +78,7 @@ public class AuthenticationService {
                     .body(ResponseMessageDTO.builder()
                             .message(e.getMessage())
                             .success(false)
-                            .statusCode(400)
+                            .statusCode(401)
                             .data(null)
                             .build());
         }
@@ -79,7 +92,7 @@ public class AuthenticationService {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             Map<String, Object> claims = Map.of("role", user.getRole().toString(),
-                    "name", user.getName(),
+                    "username", user.getUsername(),
                     "email", user.getEmail()
             );
 
@@ -90,7 +103,7 @@ public class AuthenticationService {
                     body(ResponseMessageDTO.builder()
                             .message(e.getMessage())
                             .success(false)
-                            .statusCode(400)
+                            .statusCode(404)
                             .data(null).build());
         }
     }
