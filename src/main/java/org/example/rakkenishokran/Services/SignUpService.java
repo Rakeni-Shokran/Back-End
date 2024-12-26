@@ -116,9 +116,9 @@ package org.example.rakkenishokran.Services;
          long userId = userRepository.save(userDriver);
 
          var driver = Driver.builder()
+                 .id(userId)
                  .licenseNumber(signUpRequest.getLicenseNumber())
                  .paymentMethod(signUpRequest.getPaymentMethod())
-                 .userId(userId)
                  .build();
          driverRepository.save(driver);
          Map<String, Object> extraClaims = Map.of(
