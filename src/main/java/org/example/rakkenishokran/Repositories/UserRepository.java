@@ -114,11 +114,12 @@ public Optional<User> findByEmail(String email) {
         System.out.println(user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password) VALUES (?, ?, ?, ?)", new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password,role) VALUES (?, ?, ?, ?,?)", new String[] {"id"});
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPhoneNumber());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
+            ps.setString(5, user.getRole().name());
             return ps;
         }, keyHolder);
         System.out.println(keyHolder.getKey());
