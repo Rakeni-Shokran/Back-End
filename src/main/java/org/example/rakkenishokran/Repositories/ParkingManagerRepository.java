@@ -88,18 +88,16 @@ public class ParkingManagerRepository {
     }
 
     public Optional<User> findUnapprovedById(long id) {
-
-        String sql = "SELECT * FROM UNAPPROVED_PARKING_MANAGER LEFT JOIN USER ON UNAPPROVED_PARKING_MANAGER.id= USER.id WHERE USER.id = ? ";
+        String sql = "SELECT * FROM UNAPPROVED_PARKING_MANAGER LEFT JOIN USER ON UNAPPROVED_PARKING_MANAGER.id = USER.id WHERE USER.id = ?";
         try {
-            return Optional.of(
-                    jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
                             User.builder()
                                     .id(rs.getInt("id"))
                                     .username(rs.getString("name"))
                                     .password(rs.getString("password"))
                                     .email(rs.getString("email"))
-                                    .build()
-                    )
+                                    .build(), id)
             );
         } catch (Exception e) {
             System.err.println("Error executing query: " + sql + " with id: " + id);
