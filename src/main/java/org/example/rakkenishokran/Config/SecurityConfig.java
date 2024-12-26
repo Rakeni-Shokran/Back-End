@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/authenticate/**") // list of request that should be permitted
                         .permitAll()
                         .requestMatchers("/pm/**")
-                        .permitAll()
+                        .hasRole("ADMIN")
                         .anyRequest() // any other request should be authenticated
                         .authenticated()
                 )
