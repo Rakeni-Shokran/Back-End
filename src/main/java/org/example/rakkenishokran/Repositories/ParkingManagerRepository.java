@@ -19,7 +19,7 @@ public class ParkingManagerRepository {
                 "SELECT * FROM PARKING_MANAGER WHERE id = ?",
                 (rs, rowNum) -> new ParkingManager(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber")
@@ -40,7 +40,7 @@ public class ParkingManagerRepository {
                         "WHERE USER.email = ?",
                 (rs, rowNum) -> new ParkingManager(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber")
@@ -61,7 +61,7 @@ public class ParkingManagerRepository {
                         "WHERE USER.name = ?",
                 (rs, rowNum) -> new ParkingManager(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber")
