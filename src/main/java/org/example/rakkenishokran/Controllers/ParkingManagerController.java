@@ -29,13 +29,18 @@ ParkingManagerController {
 
     @GetMapping("/getPendingApproval")
     public ResponseEntity<Object> getPendingApprove() {
+        System.out.println("Getting pending approval");
         return  parkingManagerService.getPendingApproval();
     }
 
-//    @PostMapping("/approve/{managerId}")
-//    public ResponseEntity<Object> approveManager(@PathVariable long managerId) {
-//        return  parkingManagerService.approve(managerId);
-//    }
+    @PutMapping("/approve/{managerId}")
+    public ResponseEntity<Object> approveManager(@PathVariable long managerId) {
+        return  parkingManagerService.approve(managerId);
+    }
+    @PutMapping("/decline/{managerId}")
+    public ResponseEntity<Object> decline(@PathVariable long managerId) {
+        return  parkingManagerService.decline(managerId);
+    }
 
 
 

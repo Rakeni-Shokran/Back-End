@@ -17,5 +17,6 @@ public class ParkingManagerDTO {
     private String password;
     private String email;
     private String phoneNumber;
+    private long id;
 
 }

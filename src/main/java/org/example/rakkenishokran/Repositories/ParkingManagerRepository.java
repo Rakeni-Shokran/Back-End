@@ -76,9 +76,9 @@ public class ParkingManagerRepository {
             return Optional.of(drivers.get(0));
     }
 
-    public void save(ParkingManager ParkingManager) {
+    public void save(long ParkingManagerId) {
         jdbcTemplate.update("INSERT INTO PARKING_MANAGER (id) VALUES (?)",
-                ParkingManager.getId()
+                ParkingManagerId
         );
     }
     public void saveToUnapproved(ParkingManager ParkingManager) {
@@ -107,12 +107,12 @@ public class ParkingManagerRepository {
             return Optional.empty();
         }
     }
-    public List<Optional<User>> findAllUnapproved() {
+    public List<User> findAllUnapproved() {
             String sql = "SELECT * FROM UNAPPROVED_PARKING_MANAGER " +
                     "LEFT JOIN USER ON UNAPPROVED_PARKING_MANAGER.id = USER.id";
 
             try {
-                return (List<Optional<User>>) jdbcTemplate.query(sql, (rs, rowNum) ->
+                return (List<User>) jdbcTemplate.query(sql, (rs, rowNum) ->
                         User.builder()
                                 .id(rs.getInt("id"))
                                 .username(rs.getString("name"))
@@ -125,6 +125,43 @@ public class ParkingManagerRepository {
                 e.printStackTrace();
                 return Collections.emptyList(); // Return an empty list on failure
             }
+    }
+
+    public void deleteFromUnApproved(long parkingManagerId) {
+        String sql = "DELETE FROM UNAPPROVED_PARKING_MANAGER WHERE id = ?";
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, parkingManagerId);
+            if (rowsAffected == 0) {
+                throw new EmptyResultDataAccessException(
+                        String.format("No unapproved parking manager found with id: %d", parkingManagerId), 1);
+            }
+        } catch (Exception e) {
+            System.out.println("Error executing query: " + sql + " with id: " + parkingManagerId);
+            throw e;
+        }
+    }
+
+    public void approve(long id) {
+        try {
+            // First verify the user exists in UNAPPROVED_PARKING_MANAGER
+            String checkSql = "SELECT COUNT(*) FROM UNAPPROVED_PARKING_MANAGER WHERE id = ?";
+            int count = jdbcTemplate.queryForObject(checkSql, Integer.class, id);
+
+            if (count == 0) {
+                throw new EmptyResultDataAccessException(
+                        String.format("No unapproved parking manager found with id: %d", id), 1);
+            }
+
+            // Insert into PARKING_MANAGER
+            String insertSql = "INSERT INTO PARKING_MANAGER (id) VALUES (?)";
+            jdbcTemplate.update(insertSql, id);
+
+            // Delete from UNAPPROVED_PARKING_MANAGER
+            deleteFromUnApproved(id);
+
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 }

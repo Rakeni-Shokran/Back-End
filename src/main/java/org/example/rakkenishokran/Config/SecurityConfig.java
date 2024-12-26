@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/authenticate/**") // list of request that should be permitted
                         .permitAll()
-                        .requestMatchers("/pm")
+                        .requestMatchers("/pm/**")
                         .permitAll()
                         .anyRequest() // any other request should be authenticated
                         .authenticated()

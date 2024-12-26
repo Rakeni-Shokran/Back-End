@@ -3,8 +3,6 @@ package org.example.rakkenishokran.Repositories;
 import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Enums.Role;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -132,8 +130,8 @@ public Optional<User> findByEmail(String email) {
                 user.getUsername(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getId());
     }
 
-    public void deleteById(User user) {
-        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", user.getId());
+    public void deleteById(long userId) {
+        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", userId);
     }
 
     public void deleteByEmail(User user) {
