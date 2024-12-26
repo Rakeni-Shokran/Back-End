@@ -31,25 +31,26 @@ public class AuthenticationService {
 
     public ResponseEntity<Object> authenticate(AuthenticationRequestDTO request) {
         try {
-            if (request.getUsername() == null || request.getPassword() == null || 
+            if (request.getEmail() == null || request.getPassword() == null ||
                 request.getPassword().isEmpty()) {
-                throw new IllegalArgumentException("Username and password are required");
+                throw new IllegalArgumentException("Email and password are required");
             }
 
-            System.out.println("Attempting authentication for user: " + request.getUsername());
+            System.out.println("Attempting authentication for user: " + request.getEmail());
             System.out.println("User password: " + request.getPassword());
 
-            User user = userRepository.findByUsername(request.getUsername())
+            User user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
             System.out.println("Found user: " + user.getUsername());
+            System.out.println("Email: " + user.getEmail());
             System.out.println("User password hash: " + user.getPassword());
             System.out.println("User role: " + user.getRole());
 
             // This will throw an exception if authentication fails
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
+                            request.getEmail(),
                             request.getPassword()
                     )
             );
