@@ -26,7 +26,7 @@ public class User implements UserDetails {
     private Role role;
 
     public User(long id, String email, String password, String username, String phoneNumber) {
-    } //TODO
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
