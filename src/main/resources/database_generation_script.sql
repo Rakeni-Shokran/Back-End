@@ -1,18 +1,88 @@
-CREATE TABLE IF NOT EXISTS `USER` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
-    `name` VARCHAR(255) NOT NULL,
-    `phoneNumber` VARCHAR(11) NOT NULL UNIQUE,
-    `email` VARCHAR(255) NOT NULL UNIQUE,
-    `password` VARCHAR(255) NOT NULL,
-    `role` ENUM('DRIVER', 'LOT_MANAGER', 'ADMIN') DEFAULT 'DRIVER',
-    PRIMARY KEY(`id`)
+CREATE TABLE IF NOT EXISTS USER (
+    id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    phoneNumber VARCHAR(11) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('DRIVER', 'LOT_MANAGER', 'ADMIN') DEFAULT 'DRIVER',
+    PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS `DRIVER` (
-                                        `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE ,
-                                        `payment` VARCHAR(120) NOT NULL,
-                                        `license` VARCHAR(222) NOT NULL UNIQUE ,
-                                        `userId` BIGINT NOT NULL UNIQUE ,
-                                        PRIMARY KEY (id),
-                                        FOREIGN KEY (userId) REFERENCES USER(id)
+CREATE TABLE IF NOT EXISTS DRIVER (
+    id BIGINT NOT NULL UNIQUE ,
+    payment VARCHAR(120) NOT NULL,
+    license VARCHAR(222) NOT NULL UNIQUE ,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES USER(id)
+);
+
+CREATE TABLE IF NOT EXISTS PARKING_MANAGER(
+    id BIGINT NOT NULL UNIQUE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES USER(id)
+);
+
+CREATE TABLE IF NOT EXISTS SYS_ADMIN(
+    id BIGINT NOT NULL UNIQUE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES USER(id)
+);
+
+CREATE TABLE IF NOT EXISTS PARKING_LOT(
+    id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    location VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    capacity INT NOT NULL,
+    pricingStructure INT NOT NULL,
+    parkingManagerId BIGINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (parkingManagerId) REFERENCES PARKING_MANAGER(id)
+);
+
+CREATE TABLE IF NOT EXISTS PARKING_SPOT(
+    id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    status VARCHAR(10) NOT NULL, -- Available, Occupied, Reserved
+    type VARCHAR(10) NOT NULL, -- Regular, Disabled, Electric
+    parkingLotId BIGINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (parkingLotId) REFERENCES PARKING_LOT(id)
+);
+
+CREATE TABLE IF NOT EXISTS RESERVATION(
+    id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    startTimeStamp TIMESTAMP NOT NULL,
+    endTimeStamp TIMESTAMP NOT NULL,
+    price INT NOT NULL,
+    userId BIGINT NOT NULL,
+    parkingSpotId BIGINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (userId) REFERENCES DRIVER(id),
+    FOREIGN KEY (parkingSpotId) REFERENCES PARKING_SPOT(id)
+);
+
+CREATE TABLE IF NOT EXISTS PENALTY(
+    id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    fees INT NOT NULL,
+    type VARCHAR(20) NOT NULL, -- Overstay, NotShowingUp
+    userId BIGINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (userId) REFERENCES DRIVER(id)
+);
+
+CREATE TABLE IF NOT EXISTS NOTIFICATION(
+    id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    messageType VARCHAR(255) NOT NULL,
+    seen TINYINT NOT NULL,
+    notificationTimeStamp TIMESTAMP NOT NULL,
+    userId BIGINT  NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (userId) REFERENCES USER(id)
+);
+
+CREATE TABLE IF NOT EXISTS TYPE_OF_SPOTS_IN_LOT(
+    typeOfSpots VARCHAR(10) NOT NULL,
+    parkingLotId BIGINT NOT NULL,
+    PRIMARY KEY (typeOfSpots, parkingLotId),
+    FOREIGN KEY (parkingLotId) REFERENCES PARKING_LOT(id)
+
 );

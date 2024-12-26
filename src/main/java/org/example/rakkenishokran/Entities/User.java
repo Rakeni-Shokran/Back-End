@@ -6,14 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.example.rakkenishokran.Enums.Role;
-import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.lang.annotation.Inherited;
 import java.util.Collection;
-import java.util.List;
 @Getter
 @Data
 @AllArgsConstructor
@@ -21,7 +17,7 @@ import java.util.List;
 @SuperBuilder
 public class User implements UserDetails {
 
-    private Integer id;
+    private long id;
     private String email;
     private String password;
     private String username;

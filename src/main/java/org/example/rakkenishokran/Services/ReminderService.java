@@ -1,27 +1,27 @@
-// package org.example.rakkenishokran.Services;
-//
-//
+ package org.example.rakkenishokran.Services;
+
+
 // import com.example.medcare.dto.MailBody;
 // import com.example.medcare.entities.Appointment;
 // import com.example.medcare.entities.Patient;
 // import com.example.medcare.repository.AppointmentRepository;
 // import com.example.medcare.repository.UserRepository;
-// import lombok.AllArgsConstructor;
-// import lombok.RequiredArgsConstructor;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.security.access.prepost.PreAuthorize;
-// import org.springframework.stereotype.Service;
-//
-// import java.time.LocalDate;
-// import java.time.LocalDateTime;
-// import java.time.format.DateTimeFormatter;
-// import java.util.List;
-//
-//
-// @Service
-// @RequiredArgsConstructor
-// public class ReminderService {
-//
+ import lombok.AllArgsConstructor;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.security.access.prepost.PreAuthorize;
+ import org.springframework.stereotype.Service;
+
+ import java.time.LocalDate;
+ import java.time.LocalDateTime;
+ import java.time.format.DateTimeFormatter;
+ import java.util.List;
+
+
+ @Service
+ @RequiredArgsConstructor
+ public class ReminderService {
+
 //
 //     private final com.example.medcare.service.EmailService emailService;
 //     private final UserRepository userRepository;
@@ -78,7 +78,7 @@
 //             }
 //         }
 //     }
-//
-//
-//
-// }
+
+
+
+ }
