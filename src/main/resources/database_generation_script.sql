@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS PARKING_LOT(
 
 CREATE TABLE IF NOT EXISTS PARKING_SPOT(
     id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
-    status VARCHAR(10) NOT NULL, -- Available, Occupied, Reserved
+    status VARCHAR(10) NOT NULL, -- Available, Occupied
     type VARCHAR(10) NOT NULL, -- Regular, Disabled, Electric
     parkingLotId BIGINT NOT NULL,
     PRIMARY KEY (id),
