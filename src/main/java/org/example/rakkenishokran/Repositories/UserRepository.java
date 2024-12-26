@@ -3,6 +3,7 @@ package org.example.rakkenishokran.Repositories;
 import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Enums.Role;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -25,7 +26,8 @@ public class UserRepository{
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ));
     }
 
@@ -37,7 +39,8 @@ public class UserRepository{
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ),
                 email
         );
@@ -55,7 +58,8 @@ public class UserRepository{
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ),
                 username
         );
@@ -69,7 +73,7 @@ public class UserRepository{
         System.out.println(user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password,role) VALUES (?, ?, ?, ?,?)", new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password, role) VALUES (?, ?, ?, ?, ?)", new String[] {"id"});
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPhoneNumber());
             ps.setString(3, user.getEmail());
@@ -79,8 +83,7 @@ public class UserRepository{
         }, keyHolder);
         System.out.println(keyHolder.getKey());
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-}
-
+    }
 
     public void update(User user) {
         jdbcTemplate.update("UPDATE USER SET name = ?, phoneNumber = ?, email = ?, password = ? WHERE id = ?",

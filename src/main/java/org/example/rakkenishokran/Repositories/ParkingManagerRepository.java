@@ -2,6 +2,7 @@ package org.example.rakkenishokran.Repositories;
 
 import org.example.rakkenishokran.Entities.ParkingManager;
 import org.example.rakkenishokran.Entities.User;
+import org.example.rakkenishokran.Enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -88,16 +89,18 @@ public class ParkingManagerRepository {
     }
 
     public Optional<User> findUnapprovedById(long id) {
-        String sql = "SELECT * FROM UNAPPROVED_PARKING_MANAGER LEFT JOIN USER ON UNAPPROVED_PARKING_MANAGER.id = USER.id WHERE USER.id = ?";
+        String sql = "SELECT * FROM UNAPPROVED_PARKING_MANAGER LEFT JOIN USER ON UNAPPROVED_PARKING_MANAGER.id= USER.id WHERE USER.id = ? ";
         try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            return Optional.of(
+                    jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
                             User.builder()
                                     .id(rs.getInt("id"))
                                     .username(rs.getString("name"))
                                     .password(rs.getString("password"))
                                     .email(rs.getString("email"))
-                                    .build(), id)
+                                    .role(Role.valueOf(rs.getString("role")))
+                                    .build()
+                    )
             );
         } catch (Exception e) {
             System.err.println("Error executing query: " + sql + " with id: " + id);
