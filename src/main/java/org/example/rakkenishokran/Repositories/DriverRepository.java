@@ -15,6 +15,7 @@ public class DriverRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
     public void save(Driver driver) {
         System.out.println("Here");
         System.out.println(driver.getPaymentMethod());
@@ -27,4 +28,5 @@ public class DriverRepository {
         );
         System.out.println("There");
     }
+
 }

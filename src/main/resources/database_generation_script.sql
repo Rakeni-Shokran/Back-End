@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS `USER` (
-                                      `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
-                                      `name` VARCHAR(255) NOT NULL,
-                                      `phoneNumber` VARCHAR(11) NOT NULL UNIQUE,
-                                      `email` VARCHAR(255) NOT NULL UNIQUE,
-                                      `password` VARCHAR(255) NOT NULL,
-                                      PRIMARY KEY(`id`)
+    `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+    `name` VARCHAR(255) NOT NULL,
+    `phoneNumber` VARCHAR(11) NOT NULL UNIQUE,
+    `email` VARCHAR(255) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    PRIMARY KEY(`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `DRIVER` (
