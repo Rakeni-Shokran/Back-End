@@ -1,13 +1,10 @@
 package org.example.rakkenishokran.Controllers;
 
 import org.example.rakkenishokran.Authorization.AuthenticationResponse;
-//import com.example.medcare.dto.ClinicAdminDTO;
-//import com.example.medcare.dto.DoctorDTO;
-//import com.example.medcare.dto.PatientDTO;
 
 import org.example.rakkenishokran.DTOs.AuthenticationRequestDTO;
 import org.example.rakkenishokran.DTOs.DriverDTO;
-import org.example.rakkenishokran.DTOs.LotManagerDTO;
+import org.example.rakkenishokran.DTOs.ParkingManagerDTO;
 import org.example.rakkenishokran.Services.AuthenticationService;
 import org.example.rakkenishokran.Services.SignUpService;
 
@@ -29,7 +26,6 @@ RegistrationController {
 
     private final SignUpService signUpService;
     private final AuthenticationProvider authenticationProvider;
-    private final SignUpService regisrationService;
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register/driver")
@@ -38,11 +34,11 @@ RegistrationController {
         return signUpService.driverSignUp(request);
     }
 
-    @PostMapping("/register/lot_manager")
+    @PostMapping("/register/manager")
 
-    public ResponseEntity<Object> registerDoctor(@RequestBody LotManagerDTO request) {
+    public ResponseEntity<Object> registerDoctor(@RequestBody ParkingManagerDTO request) {
         System.out.println("request = " + request);
-        return null;
+        return signUpService.parkingManagerSignUp(request);
     }
 
     @PostMapping("/login")
