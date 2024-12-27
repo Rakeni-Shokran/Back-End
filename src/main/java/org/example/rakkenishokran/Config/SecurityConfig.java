@@ -29,6 +29,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/authenticate/**") // list of request that should be permitted
                         .permitAll()
+                        .requestMatchers("/pm/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/driver/**") // list of request that should be permitted
+                        .hasRole("DRIVER")
                         .anyRequest() // any other request should be authenticated
                         .authenticated()
                 )
