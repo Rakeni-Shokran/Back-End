@@ -77,14 +77,22 @@ public class ParkingManagerRepository {
             return Optional.of(drivers.get(0));
     }
 
+    public String getLotNameByUnApprovedManagerId(long unapprovedManagerId){
+        return jdbcTemplate.queryForObject(
+                "SELECT lotName FROM UNAPPROVED_PARKING_MANAGER WHERE id = ?",
+                (rs, rowNum) -> rs.getString("lotName"),
+                unapprovedManagerId
+        );
+    }
+
     public void save(long ParkingManagerId) {
         jdbcTemplate.update("INSERT INTO PARKING_MANAGER (id) VALUES (?)",
                 ParkingManagerId
         );
     }
-    public void saveToUnapproved(ParkingManager ParkingManager) {
-        jdbcTemplate.update("INSERT INTO UNAPPROVED_PARKING_MANAGER (id) VALUES (?)",
-                ParkingManager.getId()
+    public void saveToUnapproved(long id, String lotName) {
+        jdbcTemplate.update("INSERT INTO UNAPPROVED_PARKING_MANAGER (id, lotName) VALUES (?, ?)",
+               id, lotName
         );
     }
 
