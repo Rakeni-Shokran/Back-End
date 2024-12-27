@@ -16,4 +16,5 @@ public class Reservation{
     private int price;
     private long userId;
     private long parkingSpotId;
+    private boolean isReminded;
 }

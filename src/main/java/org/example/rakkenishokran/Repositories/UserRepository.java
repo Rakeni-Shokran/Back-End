@@ -1,6 +1,7 @@
 package org.example.rakkenishokran.Repositories;
 
 import lombok.RequiredArgsConstructor;
+import org.example.rakkenishokran.Entities.Driver;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,7 @@ public Optional<User> findByEmail(String email) {
 //        else
 //            return Optional.of(users.get(0));
 //    }
+
 
     public long save(User user) {
         System.out.println(user);
