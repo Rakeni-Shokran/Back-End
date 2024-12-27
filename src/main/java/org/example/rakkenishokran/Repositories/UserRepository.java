@@ -1,19 +1,23 @@
 package org.example.rakkenishokran.Repositories;
 
+import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.Entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.rakkenishokran.Enums.Role;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
-public class UserRepository {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+@RequiredArgsConstructor
+public class UserRepository{
+    private final JdbcTemplate jdbcTemplate;
 
     public List<User> findAll() {
         return jdbcTemplate.query("SELECT * FROM USER", (rs, rowNum) ->
@@ -22,7 +26,8 @@ public class UserRepository {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ));
     }
 
@@ -34,7 +39,8 @@ public class UserRepository {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ),
                 email
         );
@@ -52,7 +58,8 @@ public class UserRepository {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ),
                 username
         );
@@ -62,18 +69,29 @@ public class UserRepository {
             return Optional.of(users.get(0));
     }
 
-    public void save(User user) {
-        jdbcTemplate.update("INSERT INTO USER (name, phoneNumber, email, password) VALUES (?, ?, ?, ?)",
-                user.getName(),user.getPhoneNumber(), user.getEmail(), user.getPassword());
+    public long save(User user) {
+        System.out.println(user);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password, role) VALUES (?, ?, ?, ?, ?)", new String[] {"id"});
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPhoneNumber());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getRole().name());
+            return ps;
+        }, keyHolder);
+        System.out.println(keyHolder.getKey());
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     public void update(User user) {
         jdbcTemplate.update("UPDATE USER SET name = ?, phoneNumber = ?, email = ?, password = ? WHERE id = ?",
-                user.getName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getId());
+                user.getUsername(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getId());
     }
 
-    public void deleteById(User user) {
-        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", user.getId());
+    public void deleteById(long userId) {
+        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", userId);
     }
 
     public void deleteByEmail(User user) {
@@ -81,7 +99,6 @@ public class UserRepository {
     }
 
     public void deleteByUsername(User user) {
-        jdbcTemplate.update("DELETE FROM USER WHERE name = ?", user.getName());
+        jdbcTemplate.update("DELETE FROM USER WHERE name = ?", user.getUsername());
     }
-
 }

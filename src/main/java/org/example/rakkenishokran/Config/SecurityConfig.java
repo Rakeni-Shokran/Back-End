@@ -27,36 +27,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers("/api/authenticate/**") // list of request that should be permitted
                         .permitAll()
-
-                        .requestMatchers("/api/appointment/**") // list of request that should be permitted
-                        .hasRole("PATIENT")
-
-
-                        .requestMatchers("/api/clinic/**")
-                        .permitAll()
-
-                        .requestMatchers("/api/v1/SuperAdmin/**") // list of request that should be permitted
-                        .hasRole("SUPER_ADMIN")
-
+                        .requestMatchers("/pm/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/driver/**") // list of request that should be permitted
+                        .hasRole("DRIVER")
                         .anyRequest() // any other request should be authenticated
                         .authenticated()
-
                 )
 
                 .sessionManagement(session -> session
-                        // new session for each request
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // to make the session stateless
                 )
                 .authenticationProvider(authenticationProvider) // to add the authentication provider
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // to add the filter before the UsernamePasswordAuthenticationFilter
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout") // to set the logout url
-//                        .addLogoutHandler(logoutHandler) // to add the logout handler
-                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()) // to set the logout success handler
-                );
+        ;
 
         return http.build();
     }

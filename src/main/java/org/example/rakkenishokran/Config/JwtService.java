@@ -40,6 +40,8 @@ public class JwtService {
         return Keys.hmacShaKeyFor(signingKeyBytes);
     }
 
+
+
     public <T> T extractClaim(String token, Function<Claims,T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -48,40 +50,10 @@ public class JwtService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-//    private static final String GOOGLE_JWKS_URL = "https://www.googleapis.com/oauth2/v3/certs";
-//
-//    public String extractEmail(String token) throws Exception {
-//
-//        // Parse the JWT token
-//        JWSObject jwsObject = JWSObject.parse(token);
-//
-//        // Fetch JWKS from Google's endpoint
-//        JWKSet jwkSet = JWKSet.load(new URL(GOOGLE_JWKS_URL));
-//
-//        // Get the RSAKey using the Key ID from the JWT header
-//        RSAKey rsaKey = (RSAKey) jwkSet.getKeyByKeyId(jwsObject.getHeader().getKeyID());
-//
-//        if (rsaKey == null) {
-//            throw new IllegalArgumentException("No matching key found in JWKS");
-//        }
-//
-//        // Convert the RSAKey to RSAPublicKey
-//        RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
-//
-//        // Create a verifier using the public key
-//        RSASSAVerifier verifier = new RSASSAVerifier(publicKey);
-//
-//        // Verify the JWT signature
-//        if (!jwsObject.verify(verifier)) {
-//            throw new IllegalArgumentException("Invalid token signature");
-//        }
-//
-//        // Parse the JWT claims
-//        JWTClaimsSet claimsSet = JWTClaimsSet.parse(jwsObject.getPayload().toString());
-//
-//        // Extract and return the email claim
-//        return claimsSet.getStringClaim("email");
-//    }
+
+    public String extractEmailToken(String token) {
+        return extractClaim(token, claims -> claims.get("email", String.class));
+    }
 
     public String generateToken(
             Map<String, Object> extraClaims,
@@ -112,8 +84,8 @@ public class JwtService {
 
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userEmail = extractUsername(token);
-        return (userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String extractedUsername = extractUsername(token);
+        return (extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private Date extractExpiration(String token) {

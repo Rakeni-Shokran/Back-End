@@ -1,21 +1,22 @@
 package org.example.rakkenishokran.DTOs;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor@RequiredArgsConstructor
 @Builder
-public class DriverDTO {
+@Data
+public class ParkingManagerDTO {
 
+    private String lotName;
+    private String lotLocation;
     private String username;
-    private String email;
     private String password;
+    private String email;
     private String phoneNumber;
-    private String paymentMethod;
-    private String licenseNumber;
+    private long id;
 
 }
