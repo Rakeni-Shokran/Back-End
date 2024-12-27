@@ -19,7 +19,7 @@ public class SysAdminRepository {
                 "SELECT * FROM PARKING_MANAGER WHERE id = ?",
                 (rs, rowNum) -> new SysAdmin(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber")
@@ -40,7 +40,7 @@ public class SysAdminRepository {
                         "WHERE USER.email = ?",
                 (rs, rowNum) -> new SysAdmin(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber")
@@ -61,7 +61,7 @@ public class SysAdminRepository {
                         "WHERE USER.name = ?",
                 (rs, rowNum) -> new SysAdmin(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber")

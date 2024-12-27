@@ -42,7 +42,7 @@ public class DriverRepository {
                 "SELECT * FROM DRIVER WHERE id = ?",
                 (rs, rowNum) -> new Driver(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
@@ -65,7 +65,7 @@ public class DriverRepository {
                     "WHERE USER.email = ?",
                 (rs, rowNum) -> new Driver(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
@@ -88,7 +88,7 @@ public class DriverRepository {
                         "WHERE USER.name = ?",
                 (rs, rowNum) -> new Driver(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),

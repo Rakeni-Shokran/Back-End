@@ -9,14 +9,14 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor@RequiredArgsConstructor
 @Builder
 @Data
-public class LotManagerDTO {
+public class ParkingManagerDTO {
+
     private String lotName;
     private String lotLocation;
     private String username;
     private String password;
     private String email;
     private String phoneNumber;
-
-
+    private long id;
 
 }
