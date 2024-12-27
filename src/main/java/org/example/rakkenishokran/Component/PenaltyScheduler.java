@@ -17,16 +17,7 @@ public class PenaltyScheduler {
     @Scheduled(fixedRate = 3000) // Runs every 3 seconds
     public void applyPenalties() {
 
-        String query = "INSERT INTO PENALTY (fees, type, userId) " +
-                "SELECT 50 AS fees, 'NotShowingUp' AS type, R.userId " +
-                "FROM RESERVATION R " +
-                "LEFT JOIN LOG_TABLE L ON R.id = L.reservationId " +
-                "WHERE R.endTimeStamp < CURRENT_TIMESTAMP " +
-                "AND L.reservationId IS NULL " +
-                "AND NOT EXISTS ( " +
-                "    SELECT 1 FROM PENALTY P " +
-                "    WHERE P.userId = R.userId AND P.type = 'NotShowingUp'" +
-                ");";
+        String query = "CALL handle_no_show_penalties()";
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
