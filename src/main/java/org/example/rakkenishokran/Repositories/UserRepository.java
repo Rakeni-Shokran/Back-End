@@ -1,6 +1,7 @@
 package org.example.rakkenishokran.Repositories;
 
 import lombok.RequiredArgsConstructor;
+import org.example.rakkenishokran.Entities.Driver;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Enums.Role;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -68,6 +69,26 @@ public class UserRepository{
         else
             return Optional.of(users.get(0));
     }
+
+//    public Optional<User> findByUsername(String username) {
+//        List<User> users = jdbcTemplate.query(
+//                "SELECT * FROM USER WHERE name = ?",
+//                (rs, rowNum) -> new User(
+//                        rs.getLong("id"),
+//                        rs.getString("email"),
+//                        rs.getString("password"),
+//                        rs.getString("name"),
+//                        rs.getString("phoneNumber")
+//                ),
+//                username
+//        );
+//        if (users.isEmpty())
+//            throw new EmptyResultDataAccessException(1);
+//        else
+//            return Optional.of(users.get(0));
+//    }
+
+
 
     public long save(User user) {
         System.out.println(user);

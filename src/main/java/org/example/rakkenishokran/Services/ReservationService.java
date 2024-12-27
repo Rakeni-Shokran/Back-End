@@ -81,11 +81,11 @@ public class ReservationService {
             Timestamp endTimeStamp = Timestamp.valueOf(endTime);
             int durationInHours = (int) ((endTimeStamp.getTime() - startTimeStamp.getTime()) / (1000 * 60 * 60));
 
-            // Calculate the total cost of the reservation
-            long totalCost = baseRate * durationInHours;
+
+            long totalCost = baseRate * durationInHours +1;
 
             // Save the reservation to the database
-            reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost);
+            reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost, false);
 
             return ResponseEntity.ok().body(ResponseMessageDTO.builder().success(true)
                     .message("Parking spot reserved successfully").statusCode(200).build());

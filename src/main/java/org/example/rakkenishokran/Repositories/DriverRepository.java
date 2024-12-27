@@ -14,6 +14,29 @@ public class DriverRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public List<Driver> findAll(){
+        List<Driver> drivers = jdbcTemplate.query(
+                "SELECT * FROM DRIVER " +
+                        "LEFT JOIN USER " +
+                        "ON DRIVER.id = USER.id " +
+                        "WHERE USER.role = 'DRIVER' ",
+                (rs, rowNum) -> new Driver(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("phoneNumber"),
+                        rs.getString("payment"),
+                        rs.getString("license")
+                )
+        );
+        if (drivers.isEmpty())
+            throw new EmptyResultDataAccessException(1);
+        else
+            return drivers;
+    }
+
+
     public Optional<Driver> findById(long id) {
         List<Driver> drivers = jdbcTemplate.query(
                 "SELECT * FROM DRIVER WHERE id = ?",
@@ -79,6 +102,8 @@ public class DriverRepository {
         else
             return Optional.of(drivers.get(0));
     }
+
+
 
     public void save(Driver driver) {
         jdbcTemplate.update("INSERT INTO DRIVER (id, payment, license) VALUES (?, ?, ?)",
