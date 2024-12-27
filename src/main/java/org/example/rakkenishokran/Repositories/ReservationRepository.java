@@ -20,6 +20,12 @@ public class ReservationRepository {
         );
     }
 
+    public void updateReservation(String startTime, String endTime, long parkingSpotId, boolean isReminded){
+        jdbcTemplate.update("UPDATE RESERVATION SET startTimeStamp = ?, endTimeStamp = ?, isReminded = ? WHERE parkingSpotId = ?",
+                startTime, endTime, isReminded, parkingSpotId
+        );
+    }
+
     public List<Reservation> findAllByDriverId(long driverId) {
         System.out.println("Driver id: "+driverId);
         return jdbcTemplate.query(

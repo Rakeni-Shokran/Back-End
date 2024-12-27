@@ -78,12 +78,10 @@ public class ReminderService {
                         emailService.sendHtmlMessage(mailBody);
 
                         // Update the reservation in the database
-                        reservationRepository.saveReservation(
-                                reservation.getParkingSpotId(),
-                                reservation.getUserId(),
+                        reservationRepository.updateReservation(
                                 reservation.getStartTimeStamp().toString(),
                                 reservation.getEndTimeStamp().toString(),
-                                reservation.getPrice(),
+                                reservation.getParkingSpotId(),
                                 true
                         );
                     }
