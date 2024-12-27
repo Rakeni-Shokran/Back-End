@@ -85,7 +85,7 @@ public class ReservationService {
             long totalCost = baseRate * durationInHours;
 
             // Save the reservation to the database
-            reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost);
+            reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost,false);
 
             return ResponseEntity.ok().body(ResponseMessageDTO.builder().success(true)
                     .message("Parking spot reserved successfully").statusCode(200).build());

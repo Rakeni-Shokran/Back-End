@@ -1,6 +1,8 @@
 package org.example.rakkenishokran.Repositories;
 
 import org.example.rakkenishokran.Entities.Driver;
+import org.example.rakkenishokran.Entities.User;
+import org.example.rakkenishokran.Enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,26 +16,33 @@ public class DriverRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<Driver> findAll(){
-        List<Driver> drivers = jdbcTemplate.query(
-                "SELECT * FROM DRIVER " +
-                        "LEFT JOIN USER " +
-                        "ON DRIVER.id = USER.id " +
-                        "WHERE USER.role = 'DRIVER' ",
-                (rs, rowNum) -> new Driver(
+    public List<User> findAll() {
+        String sql = "SELECT " +
+                "USER.id, " +
+                "USER.name AS username, " +
+                "USER.password, " +
+                "USER.email, " +
+                "USER.phoneNumber, " +
+                "USER.role " +
+                "FROM USER " +
+                "INNER JOIN DRIVER ON USER.id = DRIVER.id " +
+                "WHERE USER.role = 'DRIVER'";
+
+        List<User> drivers = jdbcTemplate.query(sql, (rs, rowNum) ->
+                new User(
                         rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("password"),
                         rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("username"),
                         rs.getString("phoneNumber"),
-                        rs.getString("payment"),
-                        rs.getString("license")
+                        Role.valueOf(rs.getString("role")) // Ensure your User model has a 'role' field if needed
                 )
         );
-        if (drivers.isEmpty())
+
+        if (drivers.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
-        else
-            return drivers;
+        }
+        return drivers;
     }
 
 
@@ -42,7 +51,7 @@ public class DriverRepository {
                 "SELECT * FROM DRIVER WHERE id = ?",
                 (rs, rowNum) -> new Driver(
                         rs.getLong("id"),
-                        rs.getString("name"),
+                        rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
@@ -60,12 +69,12 @@ public class DriverRepository {
     public Optional<Driver> findByEmail(String email){
         List<Driver> drivers = jdbcTemplate.query(
                 "SELECT * FROM DRIVER " +
-                    "LEFT JOIN USER " +
-                    "ON DRIVER.id = USER.id " +
-                    "WHERE USER.email = ?",
+                        "LEFT JOIN USER " +
+                        "ON DRIVER.id = USER.id " +
+                        "WHERE USER.email = ?",
                 (rs, rowNum) -> new Driver(
                         rs.getLong("id"),
-                        rs.getString("name"),
+                        rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
@@ -88,7 +97,7 @@ public class DriverRepository {
                         "WHERE USER.name = ?",
                 (rs, rowNum) -> new Driver(
                         rs.getLong("id"),
-                        rs.getString("name"),
+                        rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
@@ -102,8 +111,6 @@ public class DriverRepository {
         else
             return Optional.of(drivers.get(0));
     }
-
-
 
     public void save(Driver driver) {
         jdbcTemplate.update("INSERT INTO DRIVER (id, payment, license) VALUES (?, ?, ?)",
