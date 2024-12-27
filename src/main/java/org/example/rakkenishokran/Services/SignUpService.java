@@ -3,23 +3,23 @@ package org.example.rakkenishokran.Services;
  import lombok.RequiredArgsConstructor;
  import org.example.rakkenishokran.Config.JwtService;
  import org.example.rakkenishokran.DTOs.DriverDTO;
+ import org.example.rakkenishokran.DTOs.ParkingManagerDTO;
  import org.example.rakkenishokran.DTOs.ResponseMessageDTO;
+ import org.example.rakkenishokran.Entities.ParkingManager;
  import org.example.rakkenishokran.Enums.Role;
  import org.example.rakkenishokran.Repositories.DriverRepository;
+ import org.example.rakkenishokran.Repositories.ParkingManagerRepository;
  import org.example.rakkenishokran.Repositories.UserRepository;
  import org.springframework.dao.DataIntegrityViolationException;
- import org.springframework.http.HttpHeaders;
  import org.springframework.http.HttpStatus;
  import org.springframework.http.ResponseEntity;
-// import org.springframework.security.core.userdetails.User;
-    import org.example.rakkenishokran.Entities.User;
+ import org.example.rakkenishokran.Entities.User;
  import org.springframework.security.crypto.password.PasswordEncoder;
  import org.springframework.stereotype.Service;
  import org.springframework.transaction.annotation.Transactional;
 
  import org.example.rakkenishokran.Entities.Driver;
- import java.time.LocalDate;
- import java.time.Period;
+
  import java.util.Map;
 
  @RequiredArgsConstructor
@@ -30,6 +30,7 @@ package org.example.rakkenishokran.Services;
      private final PasswordEncoder passwordEncoder;
      private final DriverRepository driverRepository;
      private final UserRepository userRepository;
+     private final ParkingManagerRepository parkingManagerRepository;
 
      public ResponseEntity<Object> driverSignUp(DriverDTO signUpRequest) {
 
@@ -51,57 +52,56 @@ package org.example.rakkenishokran.Services;
              return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
                      .message("An unexpected error occurred").statusCode(500).build());
          }
-
      }
 
-//     public ResponseEntity<Object> doctorSignUp(DoctorDTO signUpRequest) {
-//
-//         License license = new License(signUpRequest.getLicenseNumber(), signUpRequest.getSpecialty(),
-//                 signUpRequest.getIssuingDate());
-//         try {
-//             String jwtToken = saveDoctor(signUpRequest, license);
-//             HttpHeaders responseHeader = new HttpHeaders();
-//             responseHeader.set("message", "Doctor registered successfully");
-//             return ResponseEntity.ok().headers(responseHeader).body(
-//                     ResponseMessageDTO.builder().success(true).message("Doctor registered successfully").statusCode(200)
-//                             .data(jwtToken).build());
-//         } catch (DataIntegrityViolationException e) {
-//             String errorMessage = extractConstraintMessage(e.getMessage());
-//             return ResponseEntity.status(HttpStatus.CONFLICT)
-//                     .body(ResponseMessageDTO.builder().success(false).message(errorMessage).statusCode(400).build());
-//         } catch (Exception e) {
-//             return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
-//                     .message("An unexpected error occurred").statusCode(500).build());
-//         }
-//     }
-//
-//     @Transactional
-//     public String saveDoctor(DoctorDTO signUpRequest, License license) {
-//
-//         var doctor = Doctor.builder()
-//                 .username(signUpRequest.getUsername())
-//                 .license(license)
-//                 .firstName(signUpRequest.getFirstName())
-//                 .lastName(signUpRequest.getLastName())
-//                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
-//                 .email(signUpRequest.getEmail())
-//                 .role(Role.DOCTOR)
-//                 .phoneNumber(signUpRequest.getPhoneNumber())
-//                 .address(signUpRequest.getAddress())
-//                 .age(calculateAge(signUpRequest.getDateOfBirth()))
-//                 .birthDate(signUpRequest.getDateOfBirth())
-//                 .createdAt(LocalDate.now())
-//                 .gender(signUpRequest.getGender())
-//                 .build();
-//         doctorRepository.save(doctor);
-//         Map<String, Object> extraClaims = Map.of(
-//                 "role", doctor.getRole().name(),
-//                 "firstName", doctor.getFirstName(),
-//                 "lastName", doctor.getLastName(),
-//                 "username", doctor.getUsername(),
-//                 "email", doctor.getEmail());
-//         return jwtService.generateToken(extraClaims, doctor);
-//     }
+     public ResponseEntity<Object> parkingManagerSignUp(ParkingManagerDTO signUpRequest) {
+
+         try {
+             String jwtToken = saveParkingManager(signUpRequest);
+             return ResponseEntity.ok().body(
+                     ResponseMessageDTO.builder()
+                             .success(true)
+                             .message("Manager registered successfully")
+                             .statusCode(200)
+                             .data(jwtToken)
+                             .build());
+
+         } catch (DataIntegrityViolationException e) {
+             String errorMessage = extractConstraintMessage(e.getMessage());
+             return ResponseEntity.status(HttpStatus.CONFLICT)
+                     .body(ResponseMessageDTO.builder().success(false).message(errorMessage).statusCode(409).build());
+         } catch (Exception e) {
+             return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
+                     .message("An unexpected error occurred").statusCode(500).build());
+         }
+     }
+
+     @Transactional
+     public String saveParkingManager(ParkingManagerDTO signUpRequest) {
+            var userParkingManager = User.builder()
+                    .username(signUpRequest.getUsername())
+                    .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                    .email(signUpRequest.getEmail())
+                    .role(Role.LOT_MANAGER)
+                    .phoneNumber(signUpRequest.getPhoneNumber())
+                    .build();
+
+            long userId = userRepository.save(userParkingManager);
+
+            var parkingManager = ParkingManager.builder()
+                    .id(userId)
+                    .isApproved(false)
+                    .build();
+            parkingManagerRepository.saveToUnapproved(parkingManager);
+            Map<String, Object> extraClaims = Map.of(
+                    "role", userParkingManager.getRole().name(),
+                    "username", userParkingManager.getUsername(),
+                    "email", userParkingManager.getEmail(),
+                    "isApproved", parkingManager.isApproved()
+            );
+
+            return jwtService.generateToken(extraClaims, userParkingManager);
+     }
 
      @SuppressWarnings("Transaction Annotation")
      public String saveDriver(DriverDTO signUpRequest) {
