@@ -3,9 +3,12 @@ package org.example.rakkenishokran.Services;
 import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.DTOs.*;
 import org.example.rakkenishokran.Entities.ParkingSpot;
+import org.example.rakkenishokran.Entities.Reservation;
 import org.example.rakkenishokran.Entities.User;
+import org.example.rakkenishokran.Repositories.DriverRepository;
 import org.example.rakkenishokran.Repositories.ParkingSpotRepository;
 import org.example.rakkenishokran.Repositories.ReservationRepository;
+import org.example.rakkenishokran.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ public class ReservationService {
 
     private final ParkingSpotRepository parkingSpotRepository;
     private final ReservationRepository reservationRepository;
+    private final NotificationService notificationService;
+    private final DriverRepository driverRepository;
 
     public ResponseEntity<Object> getAvailableSpots(ParkingRequestDTO request) {
 
@@ -86,7 +91,13 @@ public class ReservationService {
 
             // Save the reservation to the database
             reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost,false);
-
+            User driver = driverRepository.findById(driverId);
+            Reservation reservation = Reservation.builder()
+                    .startTimeStamp(startTimeStamp)
+                    .endTimeStamp(endTimeStamp)
+                    .parkingSpotId(parkingSpotId)
+                    .build();
+            notificationService.sendReservationConfirmationEmail(driver,reservation);
             return ResponseEntity.ok().body(ResponseMessageDTO.builder().success(true)
                     .message("Parking spot reserved successfully").statusCode(200).build());
         }catch (Exception e){

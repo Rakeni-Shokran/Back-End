@@ -18,7 +18,6 @@ public class ParkingLotService {
 
     public List<ParkingLotNamesDTO> findAllParkingLotsNames() {
         List<ParkingLot> list =  parkingLotsRepository.findAllParkingLotsNames();
-        System.out.println("listaaaaaaa = " + list);
         return list.stream()
                 .map(parkingLot -> ParkingLotNamesDTO.builder()
                         .id(parkingLot.getId())
