@@ -1,0 +1,175 @@
+DELIMITER //
+
+CREATE PROCEDURE log_occupied(IN spotId BIGINT)
+BEGIN
+    DECLARE resId BIGINT;
+    DECLARE drvId BIGINT;
+    DECLARE resStartTime TIMESTAMP;
+    DECLARE currentTime TIMESTAMP;
+
+    SET currentTime = NOW();
+
+    SELECT id, userId, startTimeStamp INTO resId, drvId, resStartTime
+    FROM RESERVATION
+    WHERE parkingSpotId = spotId AND ABS(TIMESTAMPDIFF(SECOND, startTimeStamp, currentTime)) <= 1
+    LIMIT 1;
+
+    IF resId IS NOT NULL THEN
+        INSERT INTO log_table (reservationId, actualStartTimeStamp, driverId)
+        VALUES (resId, currentTime, drvId);
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE log_available(IN spotId BIGINT, IN penaltyRate INT)
+BEGIN
+    DECLARE logId BIGINT;
+    DECLARE resId BIGINT;
+    DECLARE drvId BIGINT;
+    DECLARE resEndTime TIMESTAMP;
+    DECLARE logStartTime TIMESTAMP;
+    DECLARE currentTime TIMESTAMP;
+    DECLARE penalty INT;
+
+    SET currentTime = NOW();
+
+    SELECT id, reservationId, actualStartTimeStamp, driverId INTO logId, resId, logStartTime, drvId
+    FROM log_table
+    WHERE reservationId IN (SELECT id FROM RESERVATION WHERE parkingSpotId = spotId)
+    ORDER BY ABS(TIMESTAMPDIFF(SECOND, actualStartTimeStamp, currentTime))
+    LIMIT 1;
+
+    IF logId IS NOT NULL THEN
+        UPDATE log_table
+        SET actualEndTimeStamp = currentTime
+        WHERE id = logId;
+
+        SELECT endTimeStamp INTO resEndTime
+        FROM RESERVATION
+        WHERE id = resId;
+
+        IF TIMESTAMPDIFF(SECOND, resEndTime, currentTime) >= 1 THEN
+            SET penalty = TIMESTAMPDIFF(SECOND, resEndTime, currentTime) * 1;
+            DELETE FROM PENALTY WHERE userId = drvId;
+			INSERT INTO PENALTY (fees, type, userId)
+            VALUES (penalty, 'Overstay', drvId);
+        END IF;
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE insert_notification(IN penaltyId BIGINT)
+BEGIN
+    DECLARE drvId BIGINT;
+    DECLARE penaltyType VARCHAR(20);
+    DECLARE messageType VARCHAR(255);
+    DECLARE currentTime TIMESTAMP;
+
+    SET currentTime = NOW();
+
+    SELECT userId, type INTO drvId, penaltyType
+    FROM PENALTY
+    WHERE id = penaltyId;
+
+    IF penaltyType = 'Overstay' THEN
+        SET messageType = 'Overstay Penalty';
+    ELSEIF penaltyType = 'NotShowingUp' THEN
+        SET messageType = 'No Show Penalty';
+    ELSE
+        SET messageType = 'Penalty Notification';
+    END IF;
+
+    INSERT INTO NOTIFICATION (messageType, seen, notificationTimeStamp, userId)
+    VALUES (messageType, 0, currentTime, drvId);
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE handle_no_show_penalties()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE resId BIGINT;
+    DECLARE drvId BIGINT;
+    DECLARE cur CURSOR FOR
+        SELECT R.id, R.userId
+        FROM RESERVATION R
+        LEFT JOIN LOG_TABLE L ON R.id = L.reservationId
+        WHERE R.endTimeStamp < CURRENT_TIMESTAMP AND L.reservationId IS NULL;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Start the transaction
+    START TRANSACTION;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO resId, drvId;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Delete any existing penalty for the driver
+        DELETE FROM PENALTY WHERE userId = drvId;
+
+        -- Insert into PENALTY table
+        INSERT INTO PENALTY (fees, type, userId)
+        VALUES (50, 'NotShowingUp', drvId);
+
+        -- Insert into LOG_TABLE
+        INSERT INTO LOG_TABLE (reservationId, actualStartTimeStamp, actualEndTimeStamp, driverId)
+        SELECT R.id, R.startTimeStamp, R.endTimeStamp, R.userId
+        FROM RESERVATION R
+        WHERE R.id = resId;
+    END LOOP;
+
+    CLOSE cur;
+
+    COMMIT;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER after_spot_occupied
+AFTER UPDATE ON PARKING_SPOT
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Occupied' THEN
+        CALL log_occupied(NEW.id);
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER after_spot_available
+AFTER UPDATE ON PARKING_SPOT
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Available' THEN
+        CALL log_available(NEW.id, 1); -- Assuming penalty rate is 1 unit per second
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER after_penalty_insert
+AFTER INSERT ON PENALTY
+FOR EACH ROW
+BEGIN
+    CALL insert_notification(NEW.id);
+END //
+
+DELIMITER ;

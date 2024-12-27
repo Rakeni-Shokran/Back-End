@@ -27,7 +27,6 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAllByDriverId(long driverId) {
-        System.out.println("Driver id: "+driverId);
         return jdbcTemplate.query(
                 "SELECT * FROM RESERVATION WHERE userId = ?",
                 (rs, rowNum) -> new Reservation(

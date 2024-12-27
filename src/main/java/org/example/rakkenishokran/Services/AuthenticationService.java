@@ -4,6 +4,7 @@ package org.example.rakkenishokran.Services;
 import org.example.rakkenishokran.Config.JwtService;
 import org.example.rakkenishokran.DTOs.*;
 import org.example.rakkenishokran.Entities.User;
+import org.example.rakkenishokran.Enums.Role;
 import org.example.rakkenishokran.Repositories.ParkingManagerRepository;
 import org.example.rakkenishokran.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,16 +39,9 @@ public class AuthenticationService {
                 throw new IllegalArgumentException("Email and password are required");
             }
 
-            System.out.println("Attempting authentication for user: " + request.getEmail());
-            System.out.println("User password: " + request.getPassword());
-
             User user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-            System.out.println("Found user: " + user.getUsername());
-            System.out.println("Email: " + user.getEmail());
-            System.out.println("User password hash: " + user.getPassword());
-            System.out.println("User role: " + user.getRole());
 
             if(user.getRole().name().equals("LOT_MANAGER")){
                 parkingManagerRepository.findUnapprovedById(user.getId())
@@ -63,7 +57,7 @@ public class AuthenticationService {
                             request.getPassword()
                     )
             );
-            System.out.println("sss");
+
 
             Map<String, Object> claims = Map.of("role", user.getRole().toString(),
                     "email", user.getEmail(),
@@ -71,13 +65,20 @@ public class AuthenticationService {
             )
                     ;
             var token = jwtService.generateToken(claims, user);
-
+            LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .role(Role.valueOf(user.getRole().toString()))
+                    .phoneNumber(user.getPhoneNumber())
+                    .token(token)
+                    .build();
             return ResponseEntity.ok().body(
                     ResponseMessageDTO.builder()
                             .message("User authenticated successfully")
                             .success(true)
                             .statusCode(200)
-                            .data(token)
+                            .data(loginResponseDTO)
                             .build());
 
         }

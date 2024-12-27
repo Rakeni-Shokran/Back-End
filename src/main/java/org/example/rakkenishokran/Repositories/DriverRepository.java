@@ -46,24 +46,35 @@ public class DriverRepository {
     }
 
 
-    public Optional<Driver> findById(long id) {
-        List<Driver> drivers = jdbcTemplate.query(
-                "SELECT * FROM DRIVER WHERE id = ?",
-                (rs, rowNum) -> new Driver(
+    public User findById(long id) {
+        String sql = "SELECT " +
+                "USER.id, " +
+                "USER.name AS username, " +
+                "USER.password, " +
+                "USER.email, " +
+                "USER.phoneNumber, " +
+                "USER.role " +
+                "FROM USER " +
+                "INNER JOIN DRIVER ON USER.id = DRIVER.id " +
+                "WHERE USER.id = ?";
+
+        List<User> drivers = jdbcTemplate.query(sql, (rs, rowNum) ->
+                new User(
                         rs.getLong("id"),
-                        rs.getString("username"),
-                        rs.getString("password"),
                         rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("username"),
                         rs.getString("phoneNumber"),
-                        rs.getString("payment"),
-                        rs.getString("license")
+                        Role.valueOf(rs.getString("role")) // Ensure your User model has a 'role' field if needed
                 ),
                 id
         );
-        if (drivers.isEmpty())
+
+        if (drivers.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
-        else
-            return Optional.of(drivers.get(0));
+        }
+        return drivers.getFirst();
+
     }
 
     public Optional<Driver> findByEmail(String email){

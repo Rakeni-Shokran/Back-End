@@ -5,7 +5,6 @@ import org.example.rakkenishokran.Entities.Reservation;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Repositories.DriverRepository;
 import org.example.rakkenishokran.Repositories.ReservationRepository;
-import org.example.rakkenishokran.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReminderService {
+public class NotificationService {
 
     private final EmailService emailService;
     private final DriverRepository driverRepository;
@@ -26,7 +25,6 @@ public class ReminderService {
     public void sendReminderReservationNearToFinish() {
         // Fetch all drivers
         List<User> drivers = driverRepository.findAll();
-        System.out.println("Drivers: " + drivers);
 
         if (drivers == null || drivers.isEmpty()) {
             System.out.println("No drivers found.");
@@ -94,5 +92,30 @@ public class ReminderService {
                 }
             }
         }
+    }
+
+    public void sendReservationConfirmationEmail(User driver, Reservation reservation) {
+        MailBodyDTO mailBody = MailBodyDTO.builder()
+                .to(driver.getEmail())
+                .subject("Reservation Confirmation")
+                .body(
+                        "<html>" +
+                                "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333333;'>" +
+                                "<p>Dear " + driver.getUsername() + ",</p>" +
+                                "<p>Your parking reservation has been confirmed successfully.</p>" +
+                                "<p>Reservation details:</p>" +
+                                "<ul>" +
+                                "<li>Start Time: " + reservation.getStartTimeStamp().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "</li>" +
+                                "<li>End Time: " + reservation.getEndTimeStamp().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "</li>" +
+                                "<li>Parking Spot ID: " + reservation.getParkingSpotId() + "</li>" +
+                                "</ul>" +
+                                "<p>Thank you for choosing Rakkeni Shokran. We hope you have a pleasant experience.</p>" +
+                                "<p>Best regards,<br><strong>Rakkeni Shokran Team</strong></p>" +
+                                "</body>" +
+                                "</html>"
+                )
+                .build();
+
+        emailService.sendHtmlMessage(mailBody);
     }
 }
