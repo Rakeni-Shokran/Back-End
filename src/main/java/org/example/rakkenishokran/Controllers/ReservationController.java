@@ -2,12 +2,12 @@ package org.example.rakkenishokran.Controllers;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.rakkenishokran.DTOs.ParkingRequestDTO;
 import org.example.rakkenishokran.Repositories.ParkingSpotRepository;
+import org.example.rakkenishokran.Services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/driver")
@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 public class ReservationController {
+
     @Autowired
-    private ParkingSpotRepository parkingSpotRepository;
+    private ReservationService reservationService;
+
     @GetMapping("/getAvailableSpots")
-    public void getAvailableSpots() {
-        System.out.println(parkingSpotRepository.findFreeParkingSpotsInTimeStampRange("123 Main St", "2023-10-02 11:00:00", "2023-10-02 12:00:00").toString());
+    public ResponseEntity<Object> getAvailableSpots(@RequestBody ParkingRequestDTO request) {
+//        System.out.println("request = " + request);
+        return reservationService.getAvailableSpots(request);
+//        System.out.println(parkingSpotRepository.findFreeParkingSpotsInTimeStampRange(location, startTime, startTime).toString());
     }
 
 }

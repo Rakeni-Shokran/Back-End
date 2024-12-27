@@ -113,3 +113,18 @@ CREATE TABLE IF NOT EXISTS TYPE_OF_SPOTS_IN_LOT(
 # INSERT INTO PARKING_MANAGER (id) VALUES (6);
 # INSERT INTO PARKING_MANAGER (id) VALUES (7);
 # INSERT INTO PARKING_MANAGER (id) VALUES (8);
+
+-- Mock data for PARKING_LOT table
+# INSERT INTO PARKING_LOT (id, location, name, capacity, pricingStructure, parkingManagerId) VALUES
+#                                                                                                (1, 'Downtown', 'Lot A', 100, 1, 3),
+#                                                                                                (2, 'Uptown', 'Lot B', 150, 2, 3),
+#                                                                                                (3, 'Suburbs', 'Lot C', 200, 3, 3);
+#
+# -- Mock data for PARKING_SPOT table
+# INSERT INTO PARKING_SPOT (id, status, type, parkingLotId) VALUES
+#                                                               (1, 'AVAILABLE', 'Regular', 1),
+#                                                               (2, 'OCCUPIED', 'Disabled', 1),
+#                                                               (3, 'AVAILABLE', 'Electric', 2),
+#                                                               (4, 'AVAILABLE', 'Regular', 2),
+#                                                               (5, 'OCCUPIED', 'Electric', 3);
+
