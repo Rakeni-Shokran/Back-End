@@ -29,7 +29,7 @@ public class ParkingSpotRepository {
                         "OR " +
                         "(RESERVATION.startTimeStamp <= ? AND RESERVATION.endTimeStamp >= ?) " +
                         "OR " +
-                        "(RESERVATION.startTimeStamp > ? AND RESERVATION.endTimeStamp < ?)))",
+                        "(RESERVATION.startTimeStamp >= ? AND RESERVATION.endTimeStamp <= ?)))",
                 (rs, rowNum) -> new ParkingSpot(
                 rs.getLong("id"),
                 rs.getLong("parkingLotId"),
