@@ -9,11 +9,12 @@ import org.example.rakkenishokran.Repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import java.sql.Timestamp;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -81,8 +82,9 @@ public class ReservationService {
             Timestamp endTimeStamp = Timestamp.valueOf(endTime);
             int durationInHours = (int) ((endTimeStamp.getTime() - startTimeStamp.getTime()) / (1000 * 60 * 60));
 
+            long scalar = getScalarForTimestamp(startTimeStamp);
             // Calculate the total cost of the reservation
-            long totalCost = baseRate * durationInHours;
+            long totalCost = baseRate * scalar + durationInHours * baseRate * scalar;
 
             // Save the reservation to the database
             reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost,false);
@@ -93,7 +95,20 @@ public class ReservationService {
             return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
                     .message("An unexpected error occurred").statusCode(500).build());
         }
-
-
     }
+
+    private static long getScalarForTimestamp(Timestamp timestamp) {
+        LocalTime time = timestamp.toLocalDateTime().toLocalTime();
+
+        if (time.isBefore(LocalTime.of(6, 0))) {
+            return (long) 0.8;
+        } else if (time.isBefore(LocalTime.of(12, 0))) {
+            return (long) 1.0;
+        } else if (time.isBefore(LocalTime.of(18, 0))) {
+            return 2;
+        } else {
+            return (long) 1.5;
+        }
+    }
+
 }
