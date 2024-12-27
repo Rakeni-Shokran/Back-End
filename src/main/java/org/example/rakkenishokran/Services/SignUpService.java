@@ -92,7 +92,7 @@ package org.example.rakkenishokran.Services;
                     .id(userId)
                     .isApproved(false)
                     .build();
-            parkingManagerRepository.saveToUnapproved(parkingManager);
+            parkingManagerRepository.saveToUnapproved(parkingManager.getId(), signUpRequest.getLotName());
             Map<String, Object> extraClaims = Map.of(
                     "role", userParkingManager.getRole().name(),
                     "username", userParkingManager.getUsername(),
@@ -103,7 +103,7 @@ package org.example.rakkenishokran.Services;
             return jwtService.generateToken(extraClaims, userParkingManager);
      }
 
-     @SuppressWarnings("Transaction Annotation")
+     @Transactional
      public String saveDriver(DriverDTO signUpRequest) {
          var userDriver = User.builder()
                  .username(signUpRequest.getUsername())

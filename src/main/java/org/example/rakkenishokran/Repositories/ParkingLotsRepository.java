@@ -21,4 +21,18 @@ public class ParkingLotsRepository {
                 )
         );
     }
+    public String findParkingLotNameByManagerId(long managerId){
+        return jdbcTemplate.queryForObject(
+                "SELECT name FROM PARKING_LOT WHERE parkingManagerId = ?",
+                (rs, rowNum) -> rs.getString("name"),
+                managerId
+        );
+    }
+    public void updateParkingLotManager(String lotName, long managerId) {
+        jdbcTemplate.update(
+                "UPDATE PARKING_LOT SET parkingManagerId = ? WHERE name = ?",
+                managerId,
+                lotName
+        );
+    }
 }

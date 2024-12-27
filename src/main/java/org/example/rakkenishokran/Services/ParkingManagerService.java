@@ -8,6 +8,7 @@ import org.example.rakkenishokran.DTOs.ResponseMessageDTO;
 import org.example.rakkenishokran.Entities.ParkingManager;
 import org.example.rakkenishokran.Enums.Role;
 import org.example.rakkenishokran.Repositories.DriverRepository;
+import org.example.rakkenishokran.Repositories.ParkingLotsRepository;
 import org.example.rakkenishokran.Repositories.ParkingManagerRepository;
 import org.example.rakkenishokran.Repositories.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,11 +30,9 @@ import java.util.Optional;
 @Service
 public class ParkingManagerService {
 
-    private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
-    private final DriverRepository driverRepository;
     private final UserRepository userRepository;
     private final ParkingManagerRepository parkingManagerRepository;
+    private final ParkingLotsRepository parkingLotsRepository;
 
     public ResponseEntity<Object> getPendingApproval() {
 
@@ -48,10 +47,14 @@ public class ParkingManagerService {
             }
             List<ParkingManagerDTO> pendingApprovalDTOs = new ArrayList<>();
             for(User user : pendingApproval){
+                System.out.println("User: " + user.getId());
+                String lotName = parkingManagerRepository.getLotNameByUnApprovedManagerId(user.getId());
+                System.out.println("Lot name: " + lotName);
                 ParkingManagerDTO parkingManagerDTO = ParkingManagerDTO.builder()
                         .id(user.getId())
                         .username(user.getUsername())
                         .email(user.getEmail())
+                        .lotName(lotName)
                         .build();
                 pendingApprovalDTOs.add(parkingManagerDTO);
             }
@@ -82,12 +85,14 @@ public class ParkingManagerService {
                                 .statusCode(404)
                                 .build());
             }
-
+            String lotName = parkingManagerRepository.getLotNameByUnApprovedManagerId(managerId);
             parkingManagerRepository.approve(managerId);
+            parkingLotsRepository.updateParkingLotManager(lotName, managerId);
             ParkingManagerDTO parkingManagerDTO = ParkingManagerDTO.builder()
                     .id(userOptional.get().getId())
                     .username(userOptional.get().getUsername())
                     .email(userOptional.get().getEmail())
+                    .lotName(lotName)
                     .build();
             return ResponseEntity.ok()
                     .body(ResponseMessageDTO.builder()
