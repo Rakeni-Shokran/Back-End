@@ -1,5 +1,6 @@
 package org.example.rakkenishokran.Component;
 
+import org.example.rakkenishokran.Services.EmailService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ public class PenaltyScheduler {
     @Autowired
     private DataSource dataSource;
 
-    @Scheduled(fixedRate = 3000) // Runs every 30 seconds
+    @Scheduled(fixedRate = 3000) // Runs every 3 seconds
     public void applyPenalties() {
 
         String query = "INSERT INTO PENALTY (fees, type, userId) " +
