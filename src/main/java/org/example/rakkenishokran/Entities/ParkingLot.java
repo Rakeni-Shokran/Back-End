@@ -14,4 +14,9 @@ public class ParkingLot {
     private int capacity;
     private int pricingStructure;
     private long parkingLotManagerId;
+
+    public ParkingLot(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
