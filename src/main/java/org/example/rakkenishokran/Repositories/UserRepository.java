@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.Entities.Driver;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Enums.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,8 +18,6 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class UserRepository{
-
-
     private final JdbcTemplate jdbcTemplate;
 
     public List<User> findAll() {
@@ -30,68 +27,48 @@ public class UserRepository{
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name"),
-                        rs.getString("phoneNumber")
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
                 ));
     }
 
-//    public Optional<User> findByEmail(String email) {
-//        List<User> users = jdbcTemplate.query(
-//                "SELECT * FROM USER WHERE email = ?",
-//                (rs, rowNum) -> new User(
-//                        rs.getLong("id"),
-//                        rs.getString("email"),
-//                        rs.getString("password"),
-//                        rs.getString("name"),
-//                        rs.getString("phoneNumber")
-//                ),
-//                email
-//        );
-//        if (users.isEmpty())
-//            throw new EmptyResultDataAccessException(1);
-//        else
-//            return Optional.of(users.get(0));
-//    }
-
-public Optional<User> findByEmail(String email) {
-    String sql = "SELECT * FROM USER WHERE email = ?";
-    try {
-        return Optional.of(
-                jdbcTemplate.queryForObject(sql, new Object[]{email.trim()}, (rs, rowNum) ->
-                        User.builder()
-                                .id(rs.getInt("id"))
-                                .username(rs.getString("name"))
-                                .password(rs.getString("password"))
-                                .email(rs.getString("email"))
-                                .role(Role.valueOf(rs.getString("role")))
-                                .build()
-                )
+    public Optional<User> findByEmail(String email) {
+        List<User> users = jdbcTemplate.query(
+                "SELECT * FROM USER WHERE email = ?",
+                (rs, rowNum) -> new User(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("name"),
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
+                ),
+                email
         );
-    } catch (Exception e) {
-        System.err.println("Error executing query: " + sql + " with email: " + email);
-        e.printStackTrace();
-        return Optional.empty();
-    }
-    }
-    public Optional<User> findByUsername(String username) {
-        String sql = "SELECT * FROM USER WHERE name = ? ";
-        try {
-            return Optional.of(
-                    jdbcTemplate.queryForObject(sql, new Object[]{username.trim()}, (rs, rowNum) ->
-                            User.builder()
-                                    .id(rs.getInt("id"))
-                                    .username(rs.getString("name"))
-                                    .password(rs.getString("password"))
-                                    .email(rs.getString("email"))
-                                    .build()
-                    )
-            );
-        } catch (Exception e) {
-            System.err.println("Error executing query: " + sql + " with username: " + username);
-            e.printStackTrace();
-            return Optional.empty();
-        }
+        if (users.isEmpty())
+            throw new EmptyResultDataAccessException(1);
+        else
+            return Optional.of(users.get(0));
     }
 
+    public Optional<User> findByUsername(String username) {
+        List<User> users = jdbcTemplate.query(
+                "SELECT * FROM USER WHERE name = ?",
+                (rs, rowNum) -> new User(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("name"),
+                        rs.getString("phoneNumber"),
+                        Role.valueOf(rs.getString("role"))
+                ),
+                username
+        );
+        if (users.isEmpty())
+            throw new EmptyResultDataAccessException(1);
+        else
+            return Optional.of(users.get(0));
+    }
 
 //    public Optional<User> findByUsername(String username) {
 //        List<User> users = jdbcTemplate.query(
@@ -112,29 +89,30 @@ public Optional<User> findByEmail(String email) {
 //    }
 
 
+
     public long save(User user) {
         System.out.println(user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password) VALUES (?, ?, ?, ?)", new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO USER (name, phoneNumber, email, password, role) VALUES (?, ?, ?, ?, ?)", new String[] {"id"});
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPhoneNumber());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
+            ps.setString(5, user.getRole().name());
             return ps;
         }, keyHolder);
         System.out.println(keyHolder.getKey());
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-}
-
+    }
 
     public void update(User user) {
         jdbcTemplate.update("UPDATE USER SET name = ?, phoneNumber = ?, email = ?, password = ? WHERE id = ?",
                 user.getUsername(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getId());
     }
 
-    public void deleteById(User user) {
-        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", user.getId());
+    public void deleteById(long userId) {
+        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", userId);
     }
 
     public void deleteByEmail(User user) {
@@ -144,5 +122,4 @@ public Optional<User> findByEmail(String email) {
     public void deleteByUsername(User user) {
         jdbcTemplate.update("DELETE FROM USER WHERE name = ?", user.getUsername());
     }
-
 }

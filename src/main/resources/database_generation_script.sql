@@ -21,14 +21,12 @@ CREATE TABLE IF NOT EXISTS PARKING_MANAGER(
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES USER(id)
 );
-<<<<<<< Updated upstream
-=======
 CREATE TABLE IF NOT EXISTS UNAPPROVED_PARKING_MANAGER(
     id BIGINT NOT NULL UNIQUE,
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES USER(id)
 );
->>>>>>> Stashed changes
+
 
 CREATE TABLE IF NOT EXISTS SYS_ADMIN(
     id BIGINT NOT NULL UNIQUE,
@@ -49,7 +47,7 @@ CREATE TABLE IF NOT EXISTS PARKING_LOT(
 
 CREATE TABLE IF NOT EXISTS PARKING_SPOT(
     id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
-    status VARCHAR(10) NOT NULL, -- Available, Occupied, Reserved
+    status VARCHAR(10) NOT NULL, -- Available, Occupied
     type VARCHAR(10) NOT NULL, -- Regular, Disabled, Electric
     parkingLotId BIGINT NOT NULL,
     PRIMARY KEY (id),
@@ -95,3 +93,39 @@ CREATE TABLE IF NOT EXISTS TYPE_OF_SPOTS_IN_LOT(
     FOREIGN KEY (parkingLotId) REFERENCES PARKING_LOT(id)
 
 );
+#
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('John Doe', '1234567890', 'john.doe@example.com', 'password123', 'DRIVER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Jane Smith', '0987654321', 'jane.smith@example.com', 'password123', 'DRIVER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Alice Johnson', '1112223333', 'alice.johnson@example.com', 'password123', 'DRIVER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Bob Brown', '4445556666', 'bob.brown@example.com', 'password123', 'DRIVER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Charlie Davis', '7778889999', 'charlie.davis@example.com', 'password123', 'DRIVER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('David Wilson', '2223334444', 'david.wilson@example.com', 'password123', 'LOT_MANAGER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Eve White', '5556667777', 'eve.white@example.com', 'password123', 'LOT_MANAGER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Frank Green', '8889990000', 'frank.green@example.com', 'password123', 'LOT_MANAGER');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Grace Black', '3334445555', 'grace.black@example.com', 'password123', 'ADMIN');
+# INSERT INTO USER (name, phoneNumber, email, password, role) VALUES ('Hank Blue', '6667778888', 'hank.blue@example.com', 'password123', 'ADMIN');
+# INSERT INTO DRIVER (id, payment, license) VALUES (1, 'Credit Card', 'D1234567');
+# INSERT INTO DRIVER (id, payment, license) VALUES (2, 'Credit Card', 'D2345678');
+# INSERT INTO DRIVER (id, payment, license) VALUES (3, 'Credit Card', 'D3456789');
+# INSERT INTO DRIVER (id, payment, license) VALUES (4, 'Credit Card', 'D4567890');
+# INSERT INTO DRIVER (id, payment, license) VALUES (5, 'Credit Card', 'D5678901');
+# INSERT INTO SYS_ADMIN (id) VALUES (9);
+# INSERT INTO SYS_ADMIN (id) VALUES (10);
+# INSERT INTO PARKING_MANAGER (id) VALUES (6);
+# INSERT INTO PARKING_MANAGER (id) VALUES (7);
+# INSERT INTO PARKING_MANAGER (id) VALUES (8);
+
+-- Mock data for PARKING_LOT table
+# INSERT INTO PARKING_LOT (id, location, name, capacity, pricingStructure, parkingManagerId) VALUES
+#                                                                                                (1, 'Downtown', 'Lot A', 100, 1, 3),
+#                                                                                                (2, 'Uptown', 'Lot B', 150, 2, 3),
+#                                                                                                (3, 'Suburbs', 'Lot C', 200, 3, 3);
+#
+# -- Mock data for PARKING_SPOT table
+# INSERT INTO PARKING_SPOT (id, status, type, parkingLotId) VALUES
+#                                                               (1, 'AVAILABLE', 'Regular', 1),
+#                                                               (2, 'OCCUPIED', 'Disabled', 1),
+#                                                               (3, 'AVAILABLE', 'Electric', 2),
+#                                                               (4, 'AVAILABLE', 'Regular', 2),
+#                                                               (5, 'OCCUPIED', 'Electric', 3);
+
