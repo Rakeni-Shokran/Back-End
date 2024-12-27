@@ -5,6 +5,7 @@ import org.example.rakkenishokran.DTOs.*;
 import org.example.rakkenishokran.Entities.ParkingSpot;
 import org.example.rakkenishokran.Entities.User;
 import org.example.rakkenishokran.Repositories.ParkingSpotRepository;
+import org.example.rakkenishokran.Repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class ReservationService {
 
     private final ParkingSpotRepository parkingSpotRepository;
+    private final ReservationRepository reservationRepository;
 
     public ResponseEntity<Object> getAvailableSpots(ParkingRequestDTO request) {
 
@@ -63,25 +65,35 @@ public class ReservationService {
 //       return ResponseEntity.ok(parkingSpots);
     }
 
-    public synchronized void reserveParkingSpot(ReservationRequestDTO request) {
+    public synchronized ResponseEntity<Object> reserveParkingSpot(ReservationRequestDTO request) {
 
-        long parkingSpotId = request.getParkingSpotId();
-        long driverId = request.getDriverId();
-        String startTime = request.getStartTime();
-        String endTime = request.getEndTime();
+        try {
+            long parkingSpotId = request.getParkingSpotId();
+            long driverId = request.getDriverId();
+            String startTime = request.getStartTime();
+            String endTime = request.getEndTime();
 
-        // Get the pricing structure for the parking lot that the parking spot belongs to
-        int baseRate = parkingSpotRepository.getLotBaseRate(parkingSpotId);
+            // Get the pricing structure for the parking lot that the parking spot belongs to
+            long baseRate = parkingSpotRepository.getLotBaseRate(parkingSpotId);
 
-        // Get the duration of the reservation in hours
-        Timestamp startTimeStamp = Timestamp.valueOf(startTime);
-        Timestamp endTimeStamp = Timestamp.valueOf(endTime);
-        int durationInHours = (int) ((endTimeStamp.getTime() - startTimeStamp.getTime()) / (1000 * 60 * 60));
+            // Get the duration of the reservation in hours
+            Timestamp startTimeStamp = Timestamp.valueOf(startTime);
+            Timestamp endTimeStamp = Timestamp.valueOf(endTime);
+            int durationInHours = (int) ((endTimeStamp.getTime() - startTimeStamp.getTime()) / (1000 * 60 * 60));
 
-        // Calculate the total cost of the reservation
-        int totalCost = baseRate * durationInHours;
+            // Calculate the total cost of the reservation
+            long totalCost = baseRate * durationInHours;
 
-        // Save the reservation to the database
-        reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost);
+            // Save the reservation to the database
+            reservationRepository.saveReservation(parkingSpotId, driverId, startTime, endTime, totalCost);
+
+            return ResponseEntity.ok().body(ResponseMessageDTO.builder().success(true)
+                    .message("Parking spot reserved successfully").statusCode(200).build());
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
+                    .message("An unexpected error occurred").statusCode(500).build());
+        }
+
+
     }
 }

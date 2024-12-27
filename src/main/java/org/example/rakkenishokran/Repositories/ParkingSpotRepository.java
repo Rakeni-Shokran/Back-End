@@ -45,4 +45,11 @@ public class ParkingSpotRepository {
                 parkingSpot.getType()
         );
     }
+
+    public long getLotBaseRate(long parkingSpotId) {
+        return jdbcTemplate.queryForObject(
+                "SELECT pricingStructure FROM PARKING_LOT JOIN PARKING_SPOT ON PARKING_LOT.id = PARKING_SPOT.parkingLotId WHERE PARKING_SPOT.id = ?",
+                Long.class, parkingSpotId
+        );
+    }
 }

@@ -3,6 +3,7 @@ package org.example.rakkenishokran.Controllers;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.DTOs.ParkingRequestDTO;
+import org.example.rakkenishokran.DTOs.ReservationRequestDTO;
 import org.example.rakkenishokran.Repositories.ParkingSpotRepository;
 import org.example.rakkenishokran.Services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class ReservationController {
 //        System.out.println("request = " + request);
         return reservationService.getAvailableSpots(request);
 //        System.out.println(parkingSpotRepository.findFreeParkingSpotsInTimeStampRange(location, startTime, startTime).toString());
+    }
+
+    @PostMapping("/reserveSpot")
+    public ResponseEntity<Object> reserveSpot(@RequestBody ReservationRequestDTO request) {
+        return reservationService.reserveParkingSpot(request);
     }
 
 }
