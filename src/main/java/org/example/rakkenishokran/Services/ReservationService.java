@@ -2,13 +2,11 @@ package org.example.rakkenishokran.Services;
 
 import lombok.RequiredArgsConstructor;
 import org.example.rakkenishokran.DTOs.*;
+import org.example.rakkenishokran.Entities.ParkingLot;
 import org.example.rakkenishokran.Entities.ParkingSpot;
 import org.example.rakkenishokran.Entities.Reservation;
 import org.example.rakkenishokran.Entities.User;
-import org.example.rakkenishokran.Repositories.DriverRepository;
-import org.example.rakkenishokran.Repositories.ParkingSpotRepository;
-import org.example.rakkenishokran.Repositories.ReservationRepository;
-import org.example.rakkenishokran.Repositories.UserRepository;
+import org.example.rakkenishokran.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final NotificationService notificationService;
     private final DriverRepository driverRepository;
+    private final ParkingLotsRepository parkingLotsRepository;
 
     public ResponseEntity<Object> getAvailableSpots(ParkingRequestDTO request) {
 
@@ -125,4 +124,38 @@ public class ReservationService {
     public List<DriverReservationDTO> findAllByDriverIdFromNow(long driverId) {
         return reservationRepository.findAllByDriverIdFromNow(driverId);
     }
+
+    public ResponseEntity<Object> getAllLots() {
+        try {
+            List<ParkingLot> parkingLots = parkingLotsRepository.findAllParkingLotsNames();
+
+            if(parkingLots.isEmpty()){
+                return ResponseEntity.badRequest().body(ResponseMessageDTO.builder()
+                        .success(false)
+                        .message("No parking lots available")
+                        .statusCode(404)
+                        .build());
+            }
+
+            List<ParkingLotNamesDTO> parkingLotNamesDTOS = new ArrayList<>();
+            for(ParkingLot parkingLot : parkingLots){
+                ParkingLotNamesDTO parkingLotNamesDTO = ParkingLotNamesDTO.builder()
+                        .id(parkingLot.getId())
+                        .name(parkingLot.getName())
+                        .build();
+                parkingLotNamesDTOS.add(parkingLotNamesDTO);
+            }
+            System.out.println("Parking Spot DTOs: " + parkingLotNamesDTOS);
+
+            return ResponseEntity.ok().body(
+                    ResponseMessageDTO.builder()
+                            .success(true)
+                            .message("Available parking spots retrieved successfully")
+                            .statusCode(200)
+                            .data(parkingLotNamesDTOS)
+                            .build());
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
+                    .message("An unexpected error occurred").statusCode(500).build());
+        }    }
 }
