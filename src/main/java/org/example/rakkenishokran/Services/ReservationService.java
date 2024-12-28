@@ -122,4 +122,7 @@ public class ReservationService {
         }
     }
 
+    public List<DriverReservationDTO> findAllByDriverIdFromNow(long driverId) {
+        return reservationRepository.findAllByDriverIdFromNow(driverId);
+    }
 }

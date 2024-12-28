@@ -33,4 +33,13 @@ public class ReservationController {
         return reservationService.reserveParkingSpot(request);
     }
 
+    @GetMapping("/getReservations/{driverId}")
+    public ResponseEntity<Object> getReservations(@PathVariable long driverId) {
+        try {
+            return ResponseEntity.ok(reservationService.findAllByDriverIdFromNow(driverId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
 }
