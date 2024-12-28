@@ -29,4 +29,14 @@ public class ParkingLotController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/getAllLots")
+    public ResponseEntity<Object> findAllParkingLots() {
+        try{
+            return ResponseEntity.ok(parkingLotService.findAllParkingLots());
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

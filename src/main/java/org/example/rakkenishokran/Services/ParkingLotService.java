@@ -25,4 +25,8 @@ public class ParkingLotService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public List<ParkingLot> findAllParkingLots() {
+        return parkingLotsRepository.findAllParkingLots();
+    }
 }

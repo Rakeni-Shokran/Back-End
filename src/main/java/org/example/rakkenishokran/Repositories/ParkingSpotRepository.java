@@ -16,7 +16,7 @@ public class ParkingSpotRepository {
         return jdbcTemplate.query(
                 "SELECT PARKING_SPOT.id, status, type, parkingLotId FROM PARKING_LOT " +
                         "JOIN PARKING_SPOT ON PARKING_LOT.id = PARKING_SPOT.parkingLotId " +
-                        "WHERE PARKING_LOT.location = ? " +
+                        "WHERE PARKING_LOT.name = ? " +
                         "AND " +
                         "(PARKING_SPOT.id NOT IN( " +
                         "SELECT DISTINCT PARKING_SPOT.id " +

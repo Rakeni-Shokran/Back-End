@@ -21,7 +21,12 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @GetMapping("/getAvailableSpots")
+    @GetMapping("/getAllLots")
+    public ResponseEntity<Object> getAllLots() {
+        return reservationService.getAllLots();
+    }
+
+    @PostMapping("/getAvailableSpots")
     public ResponseEntity<Object> getAvailableSpots(@RequestBody ParkingRequestDTO request) {
 //        System.out.println("request = " + request);
         return reservationService.getAvailableSpots(request);
