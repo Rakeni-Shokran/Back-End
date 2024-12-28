@@ -49,6 +49,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.19.1</version> <!-- Adjust to the latest available version -->
+		</dependency>
+
 		<!-- Spring Boot Mail Starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
