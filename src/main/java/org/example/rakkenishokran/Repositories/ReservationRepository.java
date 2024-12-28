@@ -1,5 +1,6 @@
 package org.example.rakkenishokran.Repositories;
 
+import org.example.rakkenishokran.DTOs.DriverReservationDTO;
 import org.example.rakkenishokran.Entities.Driver;
 import org.example.rakkenishokran.Entities.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.CallableStatement;
 import java.sql.Types;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -57,6 +59,27 @@ public class ReservationRepository {
                         rs.getBoolean("isReminded")
                 ),
                 driverId
+        );
+    }
+
+    public List<DriverReservationDTO> findAllByDriverIdFromNow(long driverId) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        return jdbcTemplate.query(
+                "SELECT DISTINCT RESERVATION.id, PARKING_LOT.id AS parkingLotId, PARKING_LOT.location, PARKING_LOT.name, PARKING_LOT.pricingStructure, RESERVATION.startTimeStamp, RESERVATION.endTimeStamp, PARKING_SPOT.id AS parkingSpotId FROM PARKING_LOT " +
+                    "JOIN PARKING_SPOT ON PARKING_LOT.id = PARKING_SPOT.parkingLotId " +
+                    "JOIN RESERVATION ON PARKING_SPOT.id = RESERVATION.parkingSpotId " +
+                    "WHERE RESERVATION.userId = ? AND RESERVATION.startTimeStamp >= ?",
+                (rs, rowNum) -> new DriverReservationDTO(
+                        rs.getLong("id"),
+                        rs.getLong("parkingLotId"),
+                        rs.getString("location"),
+                        rs.getString("name"),
+                        rs.getInt("pricingStructure"),
+                        rs.getTimestamp("startTimeStamp"),
+                        rs.getTimestamp("endTimeStamp"),
+                        rs.getLong("parkingSpotId")
+                ),
+                driverId, now
         );
     }
 }
