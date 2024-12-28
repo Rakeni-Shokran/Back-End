@@ -31,18 +31,17 @@ public class ParkingLotsRepository {
                 "pl.id AS parkingLotId, " +
                 "pl.name AS parkingLotName, " +
                 "pl.location, " +
-                "pl.capacity AS totalSpots, " +  // capacity and totalSpots are the same
-                "COUNT(ps.id) AS totalSpots, " +
+                "pl.capacity AS totalSpots, " +
                 "SUM(CASE WHEN ps.status = 'Occupied' THEN 1 ELSE 0 END) AS occupiedSpots, " +
-                "COUNT(ps.id) - SUM(CASE WHEN ps.status = 'Occupied' THEN 1 ELSE 0 END) AS availableSpots, " +
-                "(COUNT(ps.id) - SUM(CASE WHEN ps.status = 'Occupied' THEN 1 ELSE 0 END)) / COUNT(ps.id) * 100 AS occupancyRate, " +
-                "SUM(r.price) AS revenue, " +  // Calculating revenue from reservations
+                "pl.capacity - SUM(CASE WHEN ps.status = 'Occupied' THEN 1 ELSE 0 END) AS availableSpots, " +
+                "SUM(CASE WHEN ps.status = 'Occupied' THEN 1 ELSE 0 END) / pl.capacity * 100 AS occupancyRate, " +
+                "SUM(r.price) AS revenue, " +
                 "pm.id AS parkingManagerId, " +
                 "u.name AS parkingManagerName, " +
                 "u.email AS parkingManagerEmail " +
                 "FROM PARKING_LOT pl " +
                 "JOIN PARKING_SPOT ps ON pl.id = ps.parkingLotId " +
-                "LEFT JOIN RESERVATION r ON ps.id = r.parkingSpotId " +  // Left join to include all parking spots, even if no reservations exist
+                "LEFT JOIN RESERVATION r ON ps.id = r.parkingSpotId " +
                 "JOIN PARKING_MANAGER pm ON pl.parkingManagerId = pm.id " +
                 "JOIN USER u ON pm.id = u.id " +
                 "GROUP BY pl.id, pl.name, pl.location, pl.capacity, pm.id, u.name, u.email";
