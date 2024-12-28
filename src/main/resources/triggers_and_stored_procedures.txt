@@ -173,3 +173,55 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+DELIMITER //
+
+CREATE PROCEDURE SaveReservation(
+    IN p_parkingSpotId BIGINT,
+    IN p_driverId BIGINT,
+    IN p_startTime TIMESTAMP,
+    IN p_endTime TIMESTAMP,
+    IN p_totalCost INT,
+    IN p_isReminded BOOLEAN,
+    OUT p_success BOOLEAN
+)
+BEGIN
+    DECLARE spotCount INT;
+
+    START TRANSACTION;
+
+    -- Check if the parking spot is available within the given time range
+    SELECT COUNT(*)
+    INTO spotCount
+    FROM PARKING_SPOT
+    WHERE id = p_parkingSpotId
+    AND id NOT IN (
+        SELECT DISTINCT parkingSpotId
+        FROM RESERVATION
+        WHERE
+            (startTimeStamp >= p_startTime AND startTimeStamp < p_endTime AND endTimeStamp >= p_endTime)
+            OR
+            (startTimeStamp < p_startTime AND endTimeStamp <= p_endTime AND endTimeStamp > p_startTime)
+            OR
+            (startTimeStamp <= p_startTime AND endTimeStamp >= p_endTime)
+            OR
+            (startTimeStamp >= p_startTime AND endTimeStamp <= p_endTime)
+    );
+
+    -- If the spot is available, save the reservation
+    IF spotCount > 0 THEN
+
+        INSERT INTO RESERVATION (startTimeStamp, endTimeStamp, price, userId, parkingSpotId, isReminded)
+        VALUES (p_startTime, p_endTime, p_totalCost, p_driverId, p_parkingSpotId, p_isReminded);
+
+        SET p_success = TRUE;
+    ELSE
+        SET p_success = FALSE;
+    END IF;
+
+    COMMIT;
+
+END //
+
+DELIMITER ;

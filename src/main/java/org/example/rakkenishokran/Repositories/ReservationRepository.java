@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.CallableStatement;
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -14,10 +16,26 @@ public class ReservationRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public boolean saveReservationProcedure(long parkingSpotId, long driverId, String startTime, String endTime, long totalCost, boolean isReminded) {
+        String sql = "{CALL SaveReservation(?, ?, ?, ?, ?, ?, ?)}";
+        return Boolean.TRUE.equals(jdbcTemplate.execute(sql, (CallableStatement cs) -> {
+            cs.setLong(1, parkingSpotId);
+            cs.setLong(2, driverId);
+            cs.setString(3, startTime);
+            cs.setString(4, endTime);
+            cs.setLong(5, totalCost);
+            cs.setBoolean(6, isReminded);
+            cs.registerOutParameter(7, Types.BOOLEAN);
+            cs.execute();
+            return cs.getBoolean(7);
+        }));
+    }
+
     public void saveReservation(long parkingSpotId, long driverId, String startTime, String endTime, long totalCost, boolean isReminded) {
-        jdbcTemplate.update("INSERT INTO RESERVATION (parkingSpotId, userId, startTimeStamp, endTimeStamp, price, isReminded) VALUES (?, ?, ?, ?, ?, ?)",
-                parkingSpotId, driverId, startTime, endTime, totalCost, isReminded
-        );
+            boolean success = saveReservationProcedure(parkingSpotId, driverId, startTime, endTime, totalCost, isReminded);
+            if (!success) {
+                throw new RuntimeException("Failed to save reservation: Parking spot is already taken.");
+            }
     }
 
     public void updateReservation(String startTime, String endTime, long parkingSpotId, boolean isReminded){
