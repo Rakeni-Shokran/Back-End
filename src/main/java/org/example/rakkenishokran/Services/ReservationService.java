@@ -104,7 +104,7 @@ public class ReservationService {
                     .message("Parking spot reserved successfully").statusCode(200).build());
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(ResponseMessageDTO.builder().success(false)
-                    .message("An unexpected error occurred").statusCode(500).build());
+                    .message(e.getMessage()).statusCode(500).build());
         }
     }
 
