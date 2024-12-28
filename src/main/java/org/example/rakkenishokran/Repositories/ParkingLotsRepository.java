@@ -35,4 +35,18 @@ public class ParkingLotsRepository {
                 lotName
         );
     }
+
+    public List<ParkingLot> findAllParkingLots() {
+        return jdbcTemplate.query(
+                "SELECT * FROM PARKING_LOT",
+                (rs, rowNum) -> new ParkingLot(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("location"),
+                        rs.getInt("capacity"),
+                        rs.getInt("pricingStructure"),
+                        rs.getLong("parkingManagerId")
+                )
+        );
+    }
 }

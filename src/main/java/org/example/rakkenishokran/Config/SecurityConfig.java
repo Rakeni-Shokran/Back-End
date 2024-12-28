@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
                         .requestMatchers("/driver/**") // list of request that should be permitted
                         .hasRole("DRIVER")
-                        .requestMatchers("/parkingLot/getAll") // list of request that should be permitted
+                        .requestMatchers("/parkingLot/**") // list of request that should be permitted
                         .permitAll()
                         .anyRequest() // any other request should be authenticated
                         .authenticated()
